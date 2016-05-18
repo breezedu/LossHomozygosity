@@ -1,5 +1,7 @@
 package coursera_java_duke;
 
+import java.math.BigInteger;
+
 
 /***********
  * Off all the mutation sites (829 on TTN gene), some are not 'rare' enough to be considered;
@@ -25,9 +27,9 @@ public class D0518_Evaluate_max_mutation_sites {
 		
 		
 		//get all the combination results for Comb(n, x);
-		for(int i=0; i<25; i++){
-			long comb_rest = Combination(50, i);
-			System.out.println("Comb_50_" + i + " = " + comb_rest);
+		for(int i=0; i<125; i++){
+			double comb_rest = Combination(700, i);
+			System.out.println("Comb_700_" + i + " = " + comb_rest);
 		}
 		
 	}//end of main()
@@ -39,13 +41,14 @@ public class D0518_Evaluate_max_mutation_sites {
 	 * @param i2
 	 * @return
 	 */
-	private static long Combination(int n, int x) {
+	private static double Combination(int n, int x) {
 		// TODO Auto-generated method stub
 
-		long result = 1;
+		double result = 1;
 		
 		for(int i=1; i<x + 1; i++){
 			
+	
 			result *= (n + 1 - i);
 			result = result / i;
 			
