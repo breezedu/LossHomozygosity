@@ -25,9 +25,9 @@ public class D0518_Evaluate_max_mutation_sites {
 		
 		
 		//get all the combination results for Comb(n, x);
-		for(int i=0; i<5; i++){
-			long comb_rest = Combination(10, i);
-			System.out.println("Comb_10_" + i + " = " + comb_rest);
+		for(int i=0; i<25; i++){
+			long comb_rest = Combination(50, i);
+			System.out.println("Comb_50_" + i + " = " + comb_rest);
 		}
 		
 	}//end of main()
@@ -46,8 +46,12 @@ public class D0518_Evaluate_max_mutation_sites {
 		
 		for(int i=1; i<x + 1; i++){
 			
-			result *= ((n + 1 - i) / i);
-		}
+			result *= (n + 1 - i);
+			result = result / i;
+			
+			//System.out.print(" \t " + result);
+		} 
+		System.out.println();
 		
 		return result;
 	}
