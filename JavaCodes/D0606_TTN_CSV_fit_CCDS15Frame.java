@@ -1,14 +1,17 @@
 package coursera_java_duke;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /***************************
  * 
  * Get the CSV document from ExAC website, only download the LoF variants; 
- * Fit these variants into CCDS_15 exon frames. 
+ * 
+ * Filter these variants by CCDS_15 exon frames. 
  * 
  * Check how many qualify variants left, and calculate the probability of homozygous.
  * 
@@ -28,7 +31,7 @@ import java.util.Scanner;
 public class D0606_TTN_CSV_fit_CCDS15Frame {
 	
 	
-	public static void main(String[] args) throws FileNotFoundException{
+	public static void main(String[] args) throws IOException{
 		
 		//1st, read-in TTN exon frame from D:/PhD/CCDS_exon_frames/TTN_exon_frame_CCDS15
 		Scanner exon_reader = new Scanner(new File("D:/PhD/CCDS_exon_frames/TTN_exon_frame_CCDS15.txt"));
@@ -119,6 +122,16 @@ public class D0606_TTN_CSV_fit_CCDS15Frame {
 		ArrayList<Double> alleleFreq_list = new ArrayList<Double>();
 		
 		
+		
+		
+		//initial a buffer-writer to write all variants within exons;
+		File output = new File("D:/PhD/TTN_variants_OnExons.txt");
+		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
+		
+		//write in the titleLine without any quotes.
+		outWriter.write(titleLine + "\n");
+		
+		
 		while(variants_reader.hasNextLine()){
 			
 			String currLine = variants_reader.nextLine(); 
@@ -133,9 +146,11 @@ public class D0606_TTN_CSV_fit_CCDS15Frame {
 			
 			if( check_If_hits_Exons(position, exonList) ){
 				
-				System.out.println(" One hit: " + position);
+				//System.out.println(" One hit: " + position);
 				VariantsOnExons ++; 
 				alleleFreq_list.add( Double.parseDouble(variants[index_af]));
+				
+				outWriter.write(currLine + "\n");
 			}
 		}
 		
@@ -165,7 +180,7 @@ public class D0606_TTN_CSV_fit_CCDS15Frame {
 		//close all file readers
 		exon_reader.close();
 		variants_reader.close();
-		
+		outWriter.close();
 	}//end main()
 
 	
@@ -187,7 +202,7 @@ public class D0606_TTN_CSV_fit_CCDS15Frame {
 			if(position >= exonList.get(i).exonStart && position <= exonList.get(i).exonEnd) {
 				
 				hits = true; 
-				System.out.print(" " + exonList.get(i).exon_name); 
+				//System.out.print(" " + exonList.get(i).exon_name); 
 			}
 		}
 		
