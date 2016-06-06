@@ -2,6 +2,7 @@ package coursera_java_duke;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /***************************
@@ -43,9 +44,29 @@ public class D0605_TTN_CSV_fit_CCDS15Frame {
 		 * 
 		 */
 		
-		System.out.println(exon_reader.nextLine() + "\n" + exon_reader.nextLine()); 
+		System.out.println("Title line:\n" + exon_reader.nextLine() + "\n"); 
 		
+		//create an arrayList to store all exon-objects;
+		ArrayList<Exon_objects> exonList = new ArrayList<Exon_objects>();
 		
+		while(exon_reader.hasNextLine()){
+			
+			String currStr = exon_reader.nextLine();
+			String[] currExon = currStr.split("\t");
+			
+			Exon_objects tempExon = new Exon_objects();
+			tempExon.gene_name = currExon[1];
+			tempExon.geneStart = Integer.parseInt( currExon[2] );
+			tempExon.geneEnd   = Integer.parseInt( currExon[3] );
+			tempExon.exon_name = currExon[4];
+			tempExon.exonStart = Integer.parseInt( currExon[5] );
+			tempExon.exonEnd   = Integer.parseInt( currExon[6] );
+			
+			exonList.add(tempExon); 
+			
+		}//end while loop;
+		
+		System.out.println("There are " + exonList.size() + " exons in current gene: " + exonList.get(0).gene_name); 
 		
 		//2nd, read-in TTN exac variants of LoF from D:/PhD/TTN_pulled_from_ExAC/exac_TTN_LoF.CSV
 		Scanner variants_reader = new Scanner(new File("D:/PhD/TTN_pulled_from_ExAC/exac_TTN_LoF.CSV"));
@@ -65,10 +86,53 @@ public class D0605_TTN_CSV_fit_CCDS15Frame {
 		 * "LC LoF","1","108206","0","0.000009242","0","9042","0","0","7868","0","0","60554","0","0",
 		 * "6278","0","1","10212","0","0","802","0","0","13450","0"
 		 * 
+		 * Since each item is wrapped by "", and seperated by comma, so we have to delete all "s, and split the string by comma.
+		 * then we keep the chrom, position, Allele Frequency. (so far only these columns) 
+		 * 
 		 */
-		System.out.println("\n" + variants_reader.nextLine() + "\n" + variants_reader.nextLine());
 		
 		
+		String titleLine = variants_reader.nextLine();
+		titleLine = remove_quotes(titleLine);
+		System.out.println("\n Title line: \n" + titleLine );
+		
+		//get index of position and allele_frequency; 
+		int index_pos = 1;
+		int index_af = 14;
+		
+		String[] title = titleLine.split(",");
+		for(int i=0; i<title.length; i++){
+			
+			if(title[i].equals("Position")) 			index_pos = i;
+			
+			if(title[i].equals("Allele Frequency")) 	index_af = i;
+		}
+		
+		//printout the index of Position and Allele-Frequency;
+		System.out.println("Variant position: " + index_pos + ", Allele-Frequency: " + index_af);
+		
+		int VariantsOnExons = 0;
+		
+		while(variants_reader.hasNextLine()){
+			
+			String currLine = variants_reader.nextLine(); 
+			currLine = remove_quotes(currLine); 
+			
+			//System.out.println(currLine); 
+			
+			//split the line by ",";
+			String[] variants = currLine.split(",");
+			
+			int position = Integer.parseInt( variants[index_pos] );
+			
+			if( check_If_hits_Exons(position, exonList) ){
+				
+				System.out.println(" One hit: " + position);
+				VariantsOnExons ++; 
+			}
+		}
+		
+		System.out.println("There are " + VariantsOnExons + " variants on exons.");
 		
 		
 		
@@ -78,6 +142,51 @@ public class D0605_TTN_CSV_fit_CCDS15Frame {
 		variants_reader.close();
 		
 	}//end main()
+
+	
+	/*******************
+	 * check if a variant hits any exon
+	 * @param position
+	 * @param exonList
+	 * @return
+	 */
+	private static boolean check_If_hits_Exons(int position, ArrayList<Exon_objects> exonList) {
+		// TODO Auto-generated method stub
+		
+		if(position < exonList.get(0).geneStart || position >exonList.get(0).geneEnd)	return false;
+		
+		boolean hits = false; 
+		
+		for(int i=0; i<exonList.size(); i++){
+			
+			if(position >= exonList.get(i).exonStart && position <= exonList.get(i).exonEnd) {
+				
+				hits = true; 
+				System.out.print(" " + exonList.get(i).exon_name); 
+			}
+		}
+		
+		return hits;
+	} //end of check_If_hits_Exons() method; 
+
+	
+	/******************
+	 * remove all quotes within the string; 
+	 * @param str
+	 * @return
+	 */
+	private static String remove_quotes(String str) {
+		// TODO Auto-generated method stub
+		
+		String retStr = "";
+		
+		for(int i=0; i<str.length(); i++){
+			if(str.charAt(i)!= '"')
+				retStr += str.charAt(i);
+		}
+		
+		return retStr;
+	}//end remove_quotes() method;
 
 	
 }//ee
