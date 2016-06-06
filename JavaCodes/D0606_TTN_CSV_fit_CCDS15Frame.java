@@ -157,6 +157,11 @@ public class D0606_TTN_CSV_fit_CCDS15Frame {
 		
 		System.out.println("The probability of getting homozygos TTN gene: " + homo);
 		
+		/**************
+		 * There are 126 variants on exons.
+		 * The probability of getting homozygos TTN gene: 3.123799377378408E-6
+		 */
+		
 		//close all file readers
 		exon_reader.close();
 		variants_reader.close();
