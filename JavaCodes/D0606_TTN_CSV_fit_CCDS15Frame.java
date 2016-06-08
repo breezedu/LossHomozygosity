@@ -192,8 +192,29 @@ public class D0606_TTN_CSV_fit_CCDS15Frame {
 	 */
 	private static boolean check_If_hits_Exons(int position, ArrayList<Exon_objects> exonList) {
 		// TODO Auto-generated method stub
-		
-		if(position < exonList.get(0).geneStart || position >exonList.get(0).geneEnd)	return false;
+		/***************************************************************************************
+		 * This part is not 'correct', according to the CCDS gene frames.
+		 * Even for one gene like TTN, there are several different transcript regions. 
+		 * 
+		 * Example: 
+		 * 
+		 * Chr	gene_name	geneStart	geneEnd	exon_name	exonStart	exonEnd
+		 * chr2	TTN	179610311	179669368	exon0	179610311	179616765
+		 * chr2	TTN	179391738	179669368	exon0	179391738	179392033
+		 * chr2	TTN	179391738	179669368	exon0	179391738	179392033
+		 * chr2	TTN	179391738	179669368	exon0	179391738	179392033
+		 * chr2	TTN	179391738	179669368	exon0	179391738	179392033
+		 * 
+		 * Thus, we can not tell if a variant is out of region or not 
+		 * by only checking the first exon-object's gene region.
+		 * 
+		 * if(position < exonList.get(0).geneStart || position >exonList.get(0).geneEnd)	{
+		 *	
+		 *	 	System.out.println("One variant " + position + " out of region. ");
+		 *		return false;
+		 *	}
+		 *
+		 *****************************************************************************************/
 		
 		boolean hits = false; 
 		
@@ -207,6 +228,7 @@ public class D0606_TTN_CSV_fit_CCDS15Frame {
 		}
 		
 		return hits;
+		
 	} //end of check_If_hits_Exons() method; 
 
 	
