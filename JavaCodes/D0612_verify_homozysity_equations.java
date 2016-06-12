@@ -58,19 +58,28 @@ public class D0612_verify_homozysity_equations {
 		//printout combnation arrayList
 		//printArrayListofArrayList(combination);
 		
-		//2nd, calculate the probability for each situation
-		double total_pro = calculate_Probability_method2(combination, p);
+		//2nd, calculate the probability for each situation (without times /rho) 
+		double total_pro = calculate_Probability_method2_n2(combination, p);
 		
 		System.out.println("\n \n The total probability of having homozygous would be: " + total_pro);
 		
 		
 		//3rd, remove arrayLists without any '2' in the combination; 
 		
-		ArrayList<ArrayList<Integer>> homo_List_n2only = remove_No2List(combination);
+		ArrayList<ArrayList<Integer>> homo_List_n2only = get_No2List(combination);
 		
-		double method2_n2 = calculate_Probability_method2(homo_List_n2only, p);
+		double method2_n2 = calculate_Probability_method2_n2(homo_List_n2only, p);
 		
-		System.out.println("\n According to method TWO, \n The probability of having homozygous would be: " + method2_n2/total_pro);
+		//4th, remove arrayLists with '2' and only '0'
+		ArrayList<ArrayList<Integer>> homo_List_n1only = get_No1List(combination);
+		System.out.println("There are: " + homo_List_n1only.size() + " n1 only lists.");
+		
+		
+		double method2_n1 = calculate_Probability_method2_n1(homo_List_n1only, p); 
+		
+		
+		
+		System.out.println("\n According to method TWO, \n The probability of having homozygous would be: " + (method2_n2 + method2_n1)/total_pro);
 		
 		
 		
@@ -81,15 +90,62 @@ public class D0612_verify_homozysity_equations {
 	
 	
 	
-	
-	private static ArrayList<ArrayList<Integer>> remove_No2List( ArrayList<ArrayList<Integer>> combination) {
+	private static double calculate_Probability_method2_n1(ArrayList<ArrayList<Integer>> homo_List_n1only, double[] p) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		return 0;
+	}
+
+
+
+
+
+
+	private static ArrayList<ArrayList<Integer>> get_No1List(ArrayList<ArrayList<Integer>> combination) {
 		// TODO Auto-generated method stub
 		
 		ArrayList<ArrayList<Integer>> retList = new ArrayList<ArrayList<Integer>>();
 		
 		for(int i=0; i<combination.size(); i++){
 			
-			ArrayList<Integer> tempList = combination.get(i);
+			ArrayList<Integer> tempList = new ArrayList<Integer>(combination.get(i));
+			
+			int n1 = 0;
+			int n2 = 0;
+			
+			for(int j=0; j<tempList.size(); j++){
+				if(tempList.get(j) == 1) n1++;
+				if(tempList.get(j) == 2) n2++;
+			}
+			
+			if(n1 > 1 && n2 < 1) retList.add(tempList);
+		}
+		
+		
+		return retList;
+	}
+
+
+
+
+
+
+	/**********
+	 * 
+	 * 
+	 * @param combination
+	 * @return
+	 */
+	private static ArrayList<ArrayList<Integer>> get_No2List( ArrayList<ArrayList<Integer>> combination) {
+		// TODO Auto-generated method stub
+		
+		ArrayList<ArrayList<Integer>> retList = new ArrayList<ArrayList<Integer>>();
+		
+		for(int i=0; i<combination.size(); i++){
+			
+			ArrayList<Integer> tempList = new ArrayList<Integer>(combination.get(i));
 			
 			boolean with2 = false;
 			
@@ -105,17 +161,17 @@ public class D0612_verify_homozysity_equations {
 		printArrayListofArrayList(retList);
 		
 		return retList;
-	}
+	}//end of get_No1List() method; 
 
 
-	private static double calculate_Probability_method2( ArrayList<ArrayList<Integer>> combList, double[] p) {
+	private static double calculate_Probability_method2_n2( ArrayList<ArrayList<Integer>> combList, double[] p) {
 		// TODO Auto-generated method stub
 		
 		double method2_pro = 0;
 		
 		for(int i=0; i<combList.size(); i++){
 			
-			method2_pro += calculate_OneSituation(combList.get(i), p);
+			method2_pro += calculate_n2_Situation(combList.get(i), p);
 		}
 		
 		System.out.println("Current total probability: " + method2_pro);
@@ -126,7 +182,7 @@ public class D0612_verify_homozysity_equations {
 	
 	
 
-	private static double calculate_OneSituation(ArrayList<Integer> arrayList,	double[] p) {
+	private static double calculate_n2_Situation(ArrayList<Integer> arrayList,	double[] p) {
 		// TODO Auto-generated method stub
 		//System.out.print("p1=" + p[0] + " p2=" + p[1] + " p3=" + p[2] + " ");
 		
