@@ -61,7 +61,7 @@ public class D0612_verify_homozysity_equations {
 		//2nd, calculate the probability for each situation (without times /rho) 
 		double total_pro = calculate_Probability_method2_n2(combination, p);
 		
-		System.out.println("\n \n The total probability of having homozygous would be: " + total_pro);
+		System.out.println("\n \n The total probability for all /Rho would be: " + total_pro);
 		
 		
 		//3rd, remove arrayLists without any '2' in the combination; 
@@ -72,6 +72,7 @@ public class D0612_verify_homozysity_equations {
 		
 		//4th, remove arrayLists with '2' and only '0'
 		ArrayList<ArrayList<Integer>> homo_List_n1only = get_No1List(combination);
+		
 		System.out.println("There are: " + homo_List_n1only.size() + " n1 only lists.");
 		
 		
@@ -92,10 +93,38 @@ public class D0612_verify_homozysity_equations {
 	
 	private static double calculate_Probability_method2_n1(ArrayList<ArrayList<Integer>> homo_List_n1only, double[] p) {
 		// TODO Auto-generated method stub
+		double method2_n1_probability = 0;
+		
+		for(int i=0; i<homo_List_n1only.size(); i++){
+			
+			//  \Pai_{2|g} = 1 - (1/2)^(n1 - 1)
+			double Pai_2g = get_Pai2g(homo_List_n1only.get(i)); 
+			//System.out.println("The current Pai_2g is: " + Pai_2g);
+			
+			method2_n1_probability += calculate_n2_Situation(homo_List_n1only.get(i), p) * Pai_2g;
+			
+		}
 		
 		
+		return method2_n1_probability;
+	}
+
+
+
+
+
+
+	private static double get_Pai2g(ArrayList<Integer> AList) {
+		// TODO Auto-generated method stub
 		
-		return 0;
+		//double pai2g = 0;
+		int sum = 0;
+		for(int i=0; i<AList.size(); i++){
+			sum += AList.get(i);
+		}
+		
+		
+		return 1 - Math.pow(0.5, sum-1);
 	}
 
 
@@ -133,10 +162,12 @@ public class D0612_verify_homozysity_equations {
 
 
 	/**********
-	 * 
-	 * 
+	 * given an arrayList of arrayLists;
+	 * all sub-arrayLists are arrays of integers
+	 * get only these with integer 2s.
+	 *  
 	 * @param combination
-	 * @return
+	 * @return 
 	 */
 	private static ArrayList<ArrayList<Integer>> get_No2List( ArrayList<ArrayList<Integer>> combination) {
 		// TODO Auto-generated method stub
@@ -164,24 +195,39 @@ public class D0612_verify_homozysity_equations {
 	}//end of get_No1List() method; 
 
 
+	/*****************************
+	 * calculate overall probability for arrays with integer 2s
+	 * 
+	 * @param combList
+	 * @param p
+	 * @return
+	 */
 	private static double calculate_Probability_method2_n2( ArrayList<ArrayList<Integer>> combList, double[] p) {
 		// TODO Auto-generated method stub
 		
-		double method2_pro = 0;
+		double method2_n2_probability = 0;
 		
 		for(int i=0; i<combList.size(); i++){
 			
-			method2_pro += calculate_n2_Situation(combList.get(i), p);
+			method2_n2_probability += calculate_n2_Situation(combList.get(i), p);
 		}
 		
-		System.out.println("Current total probability: " + method2_pro);
-		return method2_pro;
+		System.out.println("Current total probability: " + method2_n2_probability);
+		return method2_n2_probability;
 		
 	}//end of calculate_Probability_method2() method; 
 
 	
 	
 
+	/***********************
+	 * calculating /rho given gene_i
+	 * According to HWE, for a list of variants with allele frequency p1, p2 ---- pn.
+	 * 
+	 * @param arrayList
+	 * @param p
+	 * @return
+	 */
 	private static double calculate_n2_Situation(ArrayList<Integer> arrayList,	double[] p) {
 		// TODO Auto-generated method stub
 		//System.out.print("p1=" + p[0] + " p2=" + p[1] + " p3=" + p[2] + " ");
@@ -285,91 +331,102 @@ public class D0612_verify_homozysity_equations {
 	}//end add_One_more_level() method; 
 	
 	/*************************
-	 * 
-p[0]= 0.009242
-p[1]= 0.008315
-p[2]= 0.01657
-
- According to method one, 
- The probability of having homozygous would be: 0.0011397718084950204
-	
- 
- Try method 2. 
-
- 0,  (0.9816014145640001)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 0.933618758531293
- 0,  (0.9816014145640001)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 0.03146144174748284
- 0,  (0.9816014145640001)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.650499220868749E-4
- 0,  (0.9816014145640001)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 0.015656261771001278
- 0,  (0.9816014145640001)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 5.275906928718692E-4
- 0,  (0.9816014145640001)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 4.444738202458169E-6
- 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 6.56366772845589E-5
- 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 2.2118498370095304E-6
- 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.8633940290233124E-8
- 1,  (0.018313170872)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 0.017417986160790443
- 1,  (0.018313170872)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 5.869579546776032E-4
- 1,  (0.018313170872)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 4.944883371977612E-6
- 1,  (0.018313170872)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 2.920898368473307E-4
- 1,  (0.018313170872)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 9.842954956753951E-6
- 1,  (0.018313170872)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 8.292291451013952E-8
- 1,  (0.018313170872)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 1.224545593301075E-6
- 1,  (0.018313170872)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 4.1265205415736385E-8
- 1,  (0.018313170872)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 3.4764266584238433E-10
- 2,  (8.5414564E-5)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 8.123932791762735E-5
- 2,  (8.5414564E-5)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 2.7376339212655406E-6
- 2,  (8.5414564E-5)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.3063458545788727E-8
- 2,  (8.5414564E-5)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 1.3623378625976423E-6
- 2,  (8.5414564E-5)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 4.59085819697242E-8
- 2,  (8.5414564E-5)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 3.867612352878853E-10
- 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 5.7114100382174746E-9
- 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 1.9246527832842918E-10
- 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.621442126995349E-12
-Current total probability: 1.0000000000000002
-
- 
- The total probability of having homozygous would be: 1.0000000000000002
- 0 0 2
- 0 1 2
- 0 2 0
- 0 2 1
- 0 2 2
- 1 0 2
- 1 1 2
- 1 2 0
- 1 2 1
- 1 2 2
- 2 0 0
- 2 0 1
- 2 0 2
- 2 1 0
- 2 1 1
- 2 1 2
- 2 2 0
- 2 2 1
- 2 2 2
- 0,  (0.9816014145640001)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.650499220868749E-4
- 0,  (0.9816014145640001)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 4.444738202458169E-6
- 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 6.56366772845589E-5
- 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 2.2118498370095304E-6
- 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.8633940290233124E-8
- 1,  (0.018313170872)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 4.944883371977612E-6
- 1,  (0.018313170872)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 8.292291451013952E-8
- 1,  (0.018313170872)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 1.224545593301075E-6
- 1,  (0.018313170872)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 4.1265205415736385E-8
- 1,  (0.018313170872)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 3.4764266584238433E-10
- 2,  (8.5414564E-5)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 8.123932791762735E-5
- 2,  (8.5414564E-5)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 2.7376339212655406E-6
- 2,  (8.5414564E-5)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.3063458545788727E-8
- 2,  (8.5414564E-5)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 1.3623378625976423E-6
- 2,  (8.5414564E-5)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 4.59085819697242E-8
- 2,  (8.5414564E-5)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 3.867612352878853E-10
- 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 5.7114100382174746E-9
- 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 1.9246527832842918E-10
- 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.621442126995349E-12
-Current total probability: 4.2907035007906213E-4
-
- According to method TWO, 
- The probability of having homozygous would be: 4.29070350079062E-4
+	 * 	p[0]= 0.009242
+		p[1]= 0.008315
+		p[2]= 0.01657
+		
+		 According to method one, 
+		 The probability of having homozygous would be: 0.0011397718084950204
+		
+		 
+		 Try method 2. 
+		
+		 0,  (0.9816014145640001)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 0.933618758531293
+		 0,  (0.9816014145640001)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 0.03146144174748284
+		 0,  (0.9816014145640001)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.650499220868749E-4
+		 0,  (0.9816014145640001)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 0.015656261771001278
+		 0,  (0.9816014145640001)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 5.275906928718692E-4
+		 0,  (0.9816014145640001)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 4.444738202458169E-6
+		 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 6.56366772845589E-5
+		 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 2.2118498370095304E-6
+		 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.8633940290233124E-8
+		 1,  (0.018313170872)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 0.017417986160790443
+		 1,  (0.018313170872)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 5.869579546776032E-4
+		 1,  (0.018313170872)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 4.944883371977612E-6
+		 1,  (0.018313170872)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 2.920898368473307E-4
+		 1,  (0.018313170872)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 9.842954956753951E-6
+		 1,  (0.018313170872)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 8.292291451013952E-8
+		 1,  (0.018313170872)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 1.224545593301075E-6
+		 1,  (0.018313170872)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 4.1265205415736385E-8
+		 1,  (0.018313170872)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 3.4764266584238433E-10
+		 2,  (8.5414564E-5)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 8.123932791762735E-5
+		 2,  (8.5414564E-5)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 2.7376339212655406E-6
+		 2,  (8.5414564E-5)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.3063458545788727E-8
+		 2,  (8.5414564E-5)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 1.3623378625976423E-6
+		 2,  (8.5414564E-5)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 4.59085819697242E-8
+		 2,  (8.5414564E-5)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 3.867612352878853E-10
+		 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 5.7114100382174746E-9
+		 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 1.9246527832842918E-10
+		 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.621442126995349E-12
+		Current total probability: 1.0000000000000002
+		
+		 
+		 The total probability for all /Rho would be: 1.0000000000000002
+		 0 0 2
+		 0 1 2
+		 0 2 0
+		 0 2 1
+		 0 2 2
+		 1 0 2
+		 1 1 2
+		 1 2 0
+		 1 2 1
+		 1 2 2
+		 2 0 0
+		 2 0 1
+		 2 0 2
+		 2 1 0
+		 2 1 1
+		 2 1 2
+		 2 2 0
+		 2 2 1
+		 2 2 2
+		 0,  (0.9816014145640001)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.650499220868749E-4
+		 0,  (0.9816014145640001)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 4.444738202458169E-6
+		 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 6.56366772845589E-5
+		 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 2.2118498370095304E-6
+		 0,  (0.9816014145640001)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.8633940290233124E-8
+		 1,  (0.018313170872)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 4.944883371977612E-6
+		 1,  (0.018313170872)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 8.292291451013952E-8
+		 1,  (0.018313170872)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 1.224545593301075E-6
+		 1,  (0.018313170872)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 4.1265205415736385E-8
+		 1,  (0.018313170872)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 3.4764266584238433E-10
+		 2,  (8.5414564E-5)  0,  (0.983439139225)  0,  (0.9671345649)  current Probability: 8.123932791762735E-5
+		 2,  (8.5414564E-5)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 2.7376339212655406E-6
+		 2,  (8.5414564E-5)  0,  (0.983439139225)  2,  (2.7456490000000007E-4)  current Probability: 2.3063458545788727E-8
+		 2,  (8.5414564E-5)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 1.3623378625976423E-6
+		 2,  (8.5414564E-5)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 4.59085819697242E-8
+		 2,  (8.5414564E-5)  1,  (0.01649172155)  2,  (2.7456490000000007E-4)  current Probability: 3.867612352878853E-10
+		 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  0,  (0.9671345649)  current Probability: 5.7114100382174746E-9
+		 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  1,  (0.032590870200000004)  current Probability: 1.9246527832842918E-10
+		 2,  (8.5414564E-5)  2,  (6.913922499999999E-5)  2,  (2.7456490000000007E-4)  current Probability: 1.621442126995349E-12
+		Current total probability: 4.2907035007906213E-4
+		There are: 4 n1 only lists.
+		 0,  (0.9816014145640001)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 5.275906928718692E-4
+		 1,  (0.018313170872)  0,  (0.983439139225)  1,  (0.032590870200000004)  current Probability: 5.869579546776032E-4
+		 1,  (0.018313170872)  1,  (0.01649172155)  0,  (0.9671345649)  current Probability: 2.920898368473307E-4
+		 1,  (0.018313170872)  1,  (0.01649172155)  1,  (0.032590870200000004)  current Probability: 9.842954956753951E-6
+		
+		 According to method TWO, 
+		 The probability of having homozygous would be: 0.0011397718084950289
+		 
+		 According to method ONE, 
+		 The probability of having homozygous would be: 0.0011397718084950204
+		 
+		 Two methods gave the same result.
 
 	 */
+	
+	
 	
 }//ee 
