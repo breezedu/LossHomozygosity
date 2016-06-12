@@ -28,16 +28,16 @@ public class D0612_verify_homozysity_equations {
 	
 	public static void main(String[] args){
 		
-		double p[] = {9.242e-03, 8.315e-03, 1.657e-02};
+		double p[] = {9.242e-03, 8.315e-03, 1.657e-02, 8.898e-03, 9.2344e-3};
 		
-		for(int i=0; i<3; i++){
+		for(int i=0; i<p.length; i++){
 			System.out.println("p[" + i+ "]= " + p[i]);
 		}
 		
 		//try method 1;
 		double method1_pro = 1;
 		
-		for(int i=0; i<3; i++){
+		for(int i=0; i<p.length; i++){
 			
 			method1_pro *= (1 - p[i]);
 			
@@ -53,7 +53,7 @@ public class D0612_verify_homozysity_equations {
 		//try method 2;
 		System.out.println("\n \n Try method 2. \n");
 		//1st, get a matrix of all possible conditions: 000, 001, 002, 010, 011, 020 ------222
-		ArrayList<ArrayList<Integer>> combination = getAllCombinations(3);
+		ArrayList<ArrayList<Integer>> combination = getAllCombinations(p.length);
 		
 		//printout combnation arrayList
 		//printArrayListofArrayList(combination);
@@ -82,7 +82,7 @@ public class D0612_verify_homozysity_equations {
 		
 		System.out.println("\n According to method TWO, \n The probability of having homozygous would be: " + (method2_n2 + method2_n1)/total_pro);
 		
-		
+		System.out.println("\n According to method ONE, \n The probability of having homozygous would be: " + method1_pro);
 		
 	}//end of main();
 
@@ -189,6 +189,8 @@ public class D0612_verify_homozysity_equations {
 				retList.add(tempList);
 		}
 		
+		
+		System.out.println("\nPrintout all combinations for lists with n2 > 0. ");
 		printArrayListofArrayList(retList);
 		
 		return retList;
@@ -235,7 +237,7 @@ public class D0612_verify_homozysity_equations {
 		double Probability = 1;
 		double currPro = 0;
 		
-		for(int i=0; i<3; i++){
+		for(int i=0; i<arrayList.size(); i++){
 			System.out.print(" " + arrayList.get(i) +", ");
 			
 			if(arrayList.get(i) == 0){
@@ -288,6 +290,7 @@ public class D0612_verify_homozysity_equations {
 		ArrayList<ArrayList<Integer>> combList = new ArrayList<ArrayList<Integer>>();
 		if(m<1)	return combList;
 		
+		//add first 3 lists with 0, 1, and 2 only in them.
 		for(int i=0; i<3; i++){
 			ArrayList<Integer> tempList = new ArrayList<Integer>();
 			tempList.add(i);
