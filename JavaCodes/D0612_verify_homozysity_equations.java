@@ -6,6 +6,9 @@ import java.util.ArrayList;
  * There are two ways to calculate the probability of haveing both copies of a gene affected
  * 
  * 1st, 
+ * At least one variants on gene copy#1: [1 - (1-p1)(1-p2)(1-p3)]
+ * At least one variants on gene copy#2: [1 - (1-p1)(1-p2)(1-p3)]
+ * So, the probability of have Homozygosity on a specific gene with 3 variants would be
  * [1 - (1-p1)(1-p2)(1-p3)]^2 
  * 
  * 2nd, 
@@ -28,8 +31,73 @@ public class D0612_verify_homozysity_equations {
 	
 	public static void main(String[] args){
 		
-		double p[] = {9.242e-03, 8.315e-03, 1.657e-02, 8.898e-03, 9.2344e-3};
 		
+		//step 0, initial an array of allele frequencies:
+		double p[] = {9.242e-04, 8.315e-04, 1.657e-03, 8.898e-04, 9.242e-04, 8.315e-04, 1.657e-03, 8.898e-04, 9.2344e-4};
+		
+		for(int i=0; i<p.length; i++){
+			System.out.println("p[" + i+ "]= " + p[i]);
+		}
+		
+		
+		
+		//step 1, try method 1;
+		double method1_pro = calculate_Probability_method1(p);
+				
+		System.out.println("\n According to method one, \n The probability of having homozygous would be: " + method1_pro);
+		
+		
+		
+		//step 2, try method 2;
+		System.out.println("\n \n Try method 2. \n");
+		//2.1, get a matrix of all possible conditions: 000, 001, 002, 010, 011, 020 ------222
+		ArrayList<ArrayList<Integer>> combination = getAllCombinations(p.length);
+		
+		//printout combnation arrayList
+		//printArrayListofArrayList(combination);
+		
+		//2.2, calculate the probability for each situation (without times /rho) 
+		double total_pro = calculate_Probability_method2_n2(combination, p);
+		
+		System.out.println("\n \n The total probability for all /Rho would be: " + total_pro);
+		
+		
+		//2.3, remove arrayLists without any '2' in the combination; 
+		
+		ArrayList<ArrayList<Integer>> homo_List_n2only = get_No2List(combination);
+		
+		double method2_n2 = calculate_Probability_method2_n2(homo_List_n2only, p);
+		
+		//2.4, remove arrayLists with '2' and only '0'
+		ArrayList<ArrayList<Integer>> homo_List_n1only = get_No1List(combination);
+		
+		System.out.println("There are: " + homo_List_n1only.size() + " n1 only lists.");
+		
+		
+		double method2_n1 = calculate_Probability_method2_n1(homo_List_n1only, p); 
+		
+		
+		
+		//final step: printout probabilities calculated by both methods: 
+		System.out.println("\n According to method TWO, \n The probability of having homozygous would be: " + (method2_n2 + method2_n1)/total_pro);
+		
+		System.out.println("\n According to method ONE, \n The probability of having homozygous would be: " + method1_pro);
+		
+	}//end of main();
+
+	
+	
+	
+	
+	/************
+	 * At least one variants on gene copy#1: [1 - (1-p1)(1-p2)(1-p3)]
+	 * At least one variants on gene copy#2: [1 - (1-p1)(1-p2)(1-p3)]
+	 * So, the probability of have Homozygosity on a specific gene with 3 variants would be
+	 * @param p
+	 * @return
+	 */
+	private static double calculate_Probability_method1(double[] p) {
+		// TODO Auto-generated method stub
 		for(int i=0; i<p.length; i++){
 			System.out.println("p[" + i+ "]= " + p[i]);
 		}
@@ -46,51 +114,19 @@ public class D0612_verify_homozysity_equations {
 		method1_pro = 1 - method1_pro;
 		method1_pro = method1_pro * method1_pro;
 		
-		System.out.println("\n According to method one, \n The probability of having homozygous would be: " + method1_pro);
+		return method1_pro;
 		
-		
-		
-		//try method 2;
-		System.out.println("\n \n Try method 2. \n");
-		//1st, get a matrix of all possible conditions: 000, 001, 002, 010, 011, 020 ------222
-		ArrayList<ArrayList<Integer>> combination = getAllCombinations(p.length);
-		
-		//printout combnation arrayList
-		//printArrayListofArrayList(combination);
-		
-		//2nd, calculate the probability for each situation (without times /rho) 
-		double total_pro = calculate_Probability_method2_n2(combination, p);
-		
-		System.out.println("\n \n The total probability for all /Rho would be: " + total_pro);
-		
-		
-		//3rd, remove arrayLists without any '2' in the combination; 
-		
-		ArrayList<ArrayList<Integer>> homo_List_n2only = get_No2List(combination);
-		
-		double method2_n2 = calculate_Probability_method2_n2(homo_List_n2only, p);
-		
-		//4th, remove arrayLists with '2' and only '0'
-		ArrayList<ArrayList<Integer>> homo_List_n1only = get_No1List(combination);
-		
-		System.out.println("There are: " + homo_List_n1only.size() + " n1 only lists.");
-		
-		
-		double method2_n1 = calculate_Probability_method2_n1(homo_List_n1only, p); 
-		
-		
-		
-		System.out.println("\n According to method TWO, \n The probability of having homozygous would be: " + (method2_n2 + method2_n1)/total_pro);
-		
-		System.out.println("\n According to method ONE, \n The probability of having homozygous would be: " + method1_pro);
-		
-	}//end of main();
+	} //end of calculate_Probability_method1() method; 
 
-	
-	
-	
-	
-	
+
+
+	/***************************************
+	 * Calculate Probability of homozygosity by method #2
+	 * 
+	 * @param homo_List_n1only
+	 * @param p
+	 * @return
+	 */
 	private static double calculate_Probability_method2_n1(ArrayList<ArrayList<Integer>> homo_List_n1only, double[] p) {
 		// TODO Auto-generated method stub
 		double method2_n1_probability = 0;
@@ -101,19 +137,26 @@ public class D0612_verify_homozysity_equations {
 			double Pai_2g = get_Pai2g(homo_List_n1only.get(i)); 
 			//System.out.println("The current Pai_2g is: " + Pai_2g);
 			
-			method2_n1_probability += calculate_n2_Situation(homo_List_n1only.get(i), p) * Pai_2g;
+			method2_n1_probability += calculate_Rho_for_ListOfVariants(homo_List_n1only.get(i), p) * Pai_2g;
 			
 		}
-		
-		
+				
 		return method2_n1_probability;
-	}
+		
+	} //end of calculate_Probability_method2_n1() method;
 
 
 
 
 
-
+	/******************
+	 * We have already deleted arrays with 2s and 0-only,
+	 * so whatever left contains 1 and 0 only. the sum of current array will be the number of n1
+	 * in this case, /Pai_{2|g} = 1 - (1/2)^(n1 - 1)
+	 * 
+	 * @param AList
+	 * @return
+	 */
 	private static double get_Pai2g(ArrayList<Integer> AList) {
 		// TODO Auto-generated method stub
 		
@@ -122,16 +165,21 @@ public class D0612_verify_homozysity_equations {
 		for(int i=0; i<AList.size(); i++){
 			sum += AList.get(i);
 		}
-		
-		
+				
 		return 1 - Math.pow(0.5, sum-1);
-	}
+		
+	} //end get_Pai2g() method;
 
 
 
-
-
-
+	/**********************************
+	 * get sub dataset of variants lists, with only n1s
+	 * delete variants lists with 0 only;
+	 * delete variants lists with any 2s;
+	 * 
+	 * @param combination
+	 * @return
+	 */
 	private static ArrayList<ArrayList<Integer>> get_No1List(ArrayList<ArrayList<Integer>> combination) {
 		// TODO Auto-generated method stub
 		
@@ -151,10 +199,10 @@ public class D0612_verify_homozysity_equations {
 			
 			if(n1 > 1 && n2 < 1) retList.add(tempList);
 		}
-		
-		
+				
 		return retList;
-	}
+		
+	} //end get_No1List() method; 
 
 
 
@@ -211,7 +259,7 @@ public class D0612_verify_homozysity_equations {
 		
 		for(int i=0; i<combList.size(); i++){
 			
-			method2_n2_probability += calculate_n2_Situation(combList.get(i), p);
+			method2_n2_probability += calculate_Rho_for_ListOfVariants(combList.get(i), p);
 		}
 		
 		System.out.println("Current total probability: " + method2_n2_probability);
@@ -230,7 +278,7 @@ public class D0612_verify_homozysity_equations {
 	 * @param p
 	 * @return
 	 */
-	private static double calculate_n2_Situation(ArrayList<Integer> arrayList,	double[] p) {
+	private static double calculate_Rho_for_ListOfVariants(ArrayList<Integer> arrayList,	double[] p) {
 		// TODO Auto-generated method stub
 		//System.out.print("p1=" + p[0] + " p2=" + p[1] + " p3=" + p[2] + " ");
 		
@@ -309,6 +357,16 @@ public class D0612_verify_homozysity_equations {
 	}//end of getAllCombinations() method;
 
 
+	
+	/*****************************
+	 * for a given set of variants lists;
+	 * add one more variant to the end of each exist variants list;
+	 * alternatively, each original variants list will become 3 new variants list,
+	 * by appending 0, 1, or 2 to the end of original list.
+	 * 
+	 * @param combList
+	 * @return
+	 */
 	private static ArrayList<ArrayList<Integer>> add_One_more_level( ArrayList<ArrayList<Integer>> combList) {
 		// TODO Auto-generated method stub
 
