@@ -29,3 +29,17 @@ Si_mean
 Si_var = var(Si)
 Si_var
 
+
+## (Si)^2 / [(1/n)*Sum(Si)] ~ (X^2)_1
+## P-value P( Si_mean / (Sum(Si)/n) <= X^2_1 ) == 0.05
+##
+
+Si_squre <- Si^2
+
+Chi_critical <- Si_mean^2 * length(Si) / sum(Si_squre) 
+Chi_critical
+
+## calculate the cumulative probability P(X^2 <= CV) = 0.24
+## http://stattrek.com/online-calculator/chi-square.aspx
+Cumulative = 0.24
+
