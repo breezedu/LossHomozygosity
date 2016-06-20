@@ -3,12 +3,23 @@
 ##
 
 ## read all genes information from ALS dataset 
-ALS_data <- read.table("D:/PhD/LizDeidentified_151002/LizDeidentified_151002/gene_samp_matrix_high_LOF_het.txt", header = TRUE, sep = "\t")
+ALS_hom <- read.table("D:/PhD/ALS_data/LizDeidentified_151002/gene_samp_matrix_high_LOF_het.txt", header = TRUE, sep = "\t")
+
+ALS_het <- read.table("D:/PhD/ALS_data/LizDeidentified_151002/gene_samp_matrix_high_LOF_hom.txt", header = TRUE, sep = "\t")
 
 ## get TTN gene information
-ttn <- ALS_data$TTN
+## ttn_hom is the count of n2
+## ttn_het is the count of n1
+ttn_hom <- ALS_hom$TTN
+ttn_het <- ALS_het$TTN
 
-summary(ttn)
+## for a given individual, 
+#### the \Pi_2|g would be 0, if both n1 <=1 & n2=2
+#### the \Pi_2|g would be 1 - (0.5)^(n1-1), if n1 >1 & n2=0
+#### the \Pi_2|g would be 1, if n2 > 0
+
+summary(ttn_hom)
+summary(ttn_het)
 
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
