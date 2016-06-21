@@ -3,9 +3,9 @@
 ##
 
 ## read all genes information from ALS dataset 
-ALS_hom <- read.table("D:/PhD/ALS_data/LizDeidentified_151002/gene_samp_matrix_high_LOF_het.txt", header = TRUE, sep = "\t")
+ALS_hom <- read.table("D:/PhD/LizDeidentified_151002/LizDeidentified_151002/gene_samp_matrix_high_LOF_het.txt", header = TRUE, sep = "\t")
 
-ALS_het <- read.table("D:/PhD/ALS_data/LizDeidentified_151002/gene_samp_matrix_high_LOF_hom.txt", header = TRUE, sep = "\t")
+ALS_het <- read.table("D:/PhD/LizDeidentified_151002//LizDeidentified_151002/gene_samp_matrix_high_LOF_hom.txt", header = TRUE, sep = "\t")
 
 ## get TTN gene information
 ## ttn_hom is the count of n2
@@ -21,15 +21,19 @@ ttn_het <- ALS_het$TTN
 summary(ttn_hom)
 summary(ttn_het)
 
+TTN_pai2g_observed <- read.table("D:/PhD/TTN_Pai2g.txt", header = TRUE, sep = "\t")
+
+TTN_pai2g_observed <- TTN_pai2g_observed$TTN
+
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
 ## this is the expected probability of homozygity rate for ttn gene
-ttn_pai2g <- 3.6328594930717866E-5
+ttn_pai2g_expect <- 3.6328594930717866E-5
 
 
 ## test H0: \beta = 1 using a score test:
 ## the ith person's contribution to the marginal score
-Si <- ttn - ttn_pai2g
+Si <- TTN_pai2g_observed - ttn_pai2g_expect
 summary(Si)
 
 ## get the Si_mean
