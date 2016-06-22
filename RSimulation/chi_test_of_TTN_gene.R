@@ -27,6 +27,10 @@ TTN_pai2g_observed <- read.table("D:/PhD/TTN_Pai2g_observed.txt", header = TRUE,
 ## extract only $TTN row
 TTN_pai2g_observed <- TTN_pai2g_observed$TTN
 
+## plot the homozygous variants
+plot(TTN_pai2g_observed)
+
+
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
 ## this is the expected probability of homozygity rate for ttn gene
@@ -58,5 +62,5 @@ Chi_critical
 
 ## calculate the cumulative probability P(X^2 <= CV) = 0.24
 ## http://stattrek.com/online-calculator/chi-square.aspx
-Cumulative = 0.24
+Cumulative = 0.08
 
