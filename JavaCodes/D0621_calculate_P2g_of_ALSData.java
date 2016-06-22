@@ -11,6 +11,26 @@ public class D0621_calculate_P2g_of_ALSData {
 	
 	public static void main(String[] args) throws IOException{
 		
+		//create a calculate Pi_2|g from ALS data object
+		D0621_calculate_P2g_of_ALSData calculate_ttn_Pi2g = new D0621_calculate_P2g_of_ALSData();
+		
+		calculate_ttn_Pi2g.run("TTN");
+		
+	}//end main();
+	
+	
+	/**************************************************
+	 * run() method;
+	 * pass by a gene name
+	 * calculate the Pi_2|g for that gene
+	 * 
+	 * equations based on the slice
+	 * 
+	 * @param gene_name
+	 * @throws IOException
+	 */
+	public void run(String gene_name) throws IOException{
+		
 		/**************
 		 * Step 1, read in Hom and Het data from two different datasets
 		 * D:/PhD/LizDeidentified_151002LizDeidentified_151002/gene_samp_matrix_high_LOF_het.txt
@@ -37,17 +57,17 @@ public class D0621_calculate_P2g_of_ALSData {
 		
 		for(int i=0; i<title_line_hom.length; i++){
 			
-			if( title_line_hom[i].equals("TTN") ) ttn_hom_index = i;
+			if( title_line_hom[i].equals( gene_name ) ) ttn_hom_index = i;
 			
-			if( title_line_het[i].equals("TTN") ) ttn_het_index = i;
+			if( title_line_het[i].equals( gene_name ) ) ttn_het_index = i;
 		}
 		
 		System.out.println("The indic are: " + ttn_hom_index + ", " + ttn_het_index); 
 		
 		
 		//initial two ArrayLists, to store het or hom numbers, n1 and n2;
-		ArrayList<Integer> ttn_hom_list = new ArrayList<Integer>();
-		ArrayList<Integer> ttn_het_list = new ArrayList<Integer>();		
+		ArrayList<Integer> hom_list = new ArrayList<Integer>();
+		ArrayList<Integer> het_list = new ArrayList<Integer>();		
 		
 		while(hom_reader.hasNextLine() || het_reader.hasNextLine()){
 			
@@ -60,12 +80,12 @@ public class D0621_calculate_P2g_of_ALSData {
 			int het_count = Integer.parseInt( line_het[ttn_hom_index]);
 			
 			//add count integers to corresponds arrayLists;
-			ttn_hom_list.add(hom_count);
-			ttn_het_list.add(het_count);
+			hom_list.add(hom_count);
+			het_list.add(het_count);
 		
 		}//end while loop;
 		
-		System.out.print("Compare lengths of two arrayList, hom: " + ttn_hom_list.size() + ", het: " + ttn_het_list.size());
+		System.out.print("Compare lengths of two arrayList, hom: " + hom_list.size() + ", het: " + het_list.size());
 		
 		
 		//close scanners
@@ -85,12 +105,12 @@ public class D0621_calculate_P2g_of_ALSData {
 		 * else, ttn_pai2g = 1 - (0.5)^(n1 - 1);
 		 */
 		
-		ArrayList<Double> ttn_pai2g = new ArrayList<Double>();
+		ArrayList<Double> gene_pai2g = new ArrayList<Double>();
 		
-		for(int i=0; i<ttn_hom_list.size(); i++){
+		for(int i=0; i<hom_list.size(); i++){
 			
-			int hom_count = ttn_hom_list.get(i);
-			int het_count = ttn_het_list.get(i);
+			int hom_count = hom_list.get(i);
+			int het_count = het_list.get(i);
 			
 			double current_pai2g = 0;
 			
@@ -108,7 +128,7 @@ public class D0621_calculate_P2g_of_ALSData {
 				current_pai2g = 1 - Math.pow(0.5, het_count -1);
 			}
 			
-			ttn_pai2g.add( current_pai2g);
+			gene_pai2g.add( current_pai2g);
 			
 		}//end for i<ttn_hom_list.size() loop;
 		
@@ -121,21 +141,21 @@ public class D0621_calculate_P2g_of_ALSData {
 		 */
 		
 		System.out.println("\nStep 3: \n");
-		File output = new File("D:/PhD/TTN_Pai2g_observed.txt");
+		File output = new File("D:/PhD/" + gene_name + "_Pai2g_observed_test.txt");
 		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
 		
 		//write title line: individual and ttn
-		outWriter.write("indi" + "\t" + "TTN" + "\n");
+		outWriter.write("indi" + "\t" + gene_name + "\n");
 		
-		for(int i=0; i<ttn_pai2g.size(); i++){
+		for(int i=0; i<gene_pai2g.size(); i++){
 			
-			System.out.print( ttn_pai2g.get(i) + " ");
-			outWriter.write(i + "\t" + ttn_pai2g.get(i) + "\n");
+			System.out.print( gene_pai2g.get(i) + " ");
+			outWriter.write(i + "\t" + gene_pai2g.get(i) + "\n");
 		}
 		
 		outWriter.close();
 		
-	}//end of main()
+	}//end of run()
 	
 
 }//ee
