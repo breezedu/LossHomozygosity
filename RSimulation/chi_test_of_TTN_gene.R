@@ -21,8 +21,10 @@ ttn_het <- ALS_het$TTN
 summary(ttn_hom)
 summary(ttn_het)
 
-TTN_pai2g_observed <- read.table("D:/PhD/TTN_Pai2g.txt", header = TRUE, sep = "\t")
+## read in Pai_2|g data from txt document:
+TTN_pai2g_observed <- read.table("D:/PhD/TTN_Pai2g_observed.txt", header = TRUE, sep = "\t")
 
+## extract only $TTN row
 TTN_pai2g_observed <- TTN_pai2g_observed$TTN
 
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
