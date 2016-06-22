@@ -21,8 +21,11 @@ ttn_het <- ALS_het$TTN
 summary(ttn_hom)
 summary(ttn_het)
 
+
+
+##################################################################
 ## read in Pai_2|g data from txt document:
-TTN_pai2g_observed <- read.table("D:/PhD/TTN_Pai2g_observed.txt", header = TRUE, sep = "\t")
+TTN_pai2g_observed <- read.table("D:/GitHub/LossHomozygosity/ALS_dataset/TTN_Pai2g_observed.txt", header = TRUE, sep = "\t")
 
 ## extract only $TTN row
 TTN_pai2g_observed <- TTN_pai2g_observed$TTN
@@ -60,7 +63,47 @@ Si_squre <- Si^2
 Chi_critical <- Si_mean^2 * length(Si) / sum(Si_squre) 
 Chi_critical
 
+Si_mean * sqrt(length(Si))/sqrt(var(Si))
+
 ## calculate the cumulative probability P(X^2 <= CV) = 0.24
 ## http://stattrek.com/online-calculator/chi-square.aspx
 Cumulative = 0.08
+
+
+
+sum(Si)/sqrt(length(Si)*var(Si))
+## [1] 5.263353
+
+
+1-pnorm(5.263353)
+##[1] 7.072581e-08
+
+help(pnorm)
+mean(Si)
+
+
+##[1] 0.005050642
+
+mean(Si)*sqrt(length(Si))/sqrt(var(Si))
+##[1] 5.263353
+
+(mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2
+##[1] 27.70288
+
+(mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2/length(Si)
+##[1] 0.009091855
+
+Si_mean * sqrt(length(Si))/sqrt(var(Si))
+
+
+Si_mean = mean(Si)
+Si_mean * sqrt(length(Si))/sqrt(var(Si))
+##[1] 5.263353
+
+1- pchisq(27.7, 1)
+##[1] 1.416627e-07
+
+
+( 1 - pchisq(27.702, 1)) / 2
+##[1] 7.075816e-08
 
