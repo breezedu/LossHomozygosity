@@ -5,11 +5,29 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+
+/**********************************************
+ * import selenium jars
+ * download selenium-java-2.53.0.zip from 
+ * 		http://www.seleniumhq.org/download/
+ * 
+ * in eclipse
+ * import all jars (selenium-java-2.53.0-srcs.jar selenium-java-2.53.0.jar AND all others)
+ * into the build-PATH, as external jars. 
+ * 
+ * sample code from:
+ * 		https://sites.google.com/a/chromium.org/chromedriver/getting-started
+ * 
+ * 
+ * @author Jeff
+ *
+ */
 public class D0627_tryPullData_from_ExAC {
 	
 	public static void main(String[] args) throws InterruptedException {
-			
-//		System.setProperty("webdriver.chrome.driver", "C:/Users/Downloads/chromedriver.exe");
+		
+		//the chromedriver.exe has already been placed in the PATH folder
+		//System.setProperty("webdriver.chrome.driver", "C:/Users/Downloads/chromedriver.exe");
 		
 		  WebDriver driver = new ChromeDriver();
 		  
