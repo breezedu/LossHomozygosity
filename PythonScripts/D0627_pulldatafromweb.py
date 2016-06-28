@@ -41,5 +41,6 @@ def downloadCSV( geneName ):
     ## b.visit("http://exac.broadinstitute.org/awesome?query=PCSK9")
     
 
+
 downloadCSV("SAMD11")
 downloadCSV("TNN")
