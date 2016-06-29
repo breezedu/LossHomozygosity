@@ -37,12 +37,12 @@ public class D0627_tryPullData_from_ExAC {
 		//initiate 4 genes for testing 
 		//String[] geneNames = {"SAMD9", "TNN", "SAMD11", "GPR160", "AGAP8", "AGAP9"}  ; //
 		//Here, AGAP8 and AGAP9 do not have LoF variants;
-		//gene[689], gene[1558], gene[1559], gene[1560] 1613, do not have any variants; 
+		//gene[689], gene[1558], gene[1559], gene[1560] 1613, 2917 do not have any variants; 
 		String[] geneNames = getNames.run(); 		
 		
 		
 		//for each gene name, call pullData_exac.run() method to pull CSV variants document from ExAC
-		for(int i=1613; i<geneNames.length; i++){
+		for(int i=2918; i<geneNames.length; i++){
 			
 			pullData_exac.run(geneNames[i]);
 			
@@ -84,9 +84,11 @@ public class D0627_tryPullData_from_ExAC {
 		//submit the query 
 		searchBox.sendKeys( geneName );
 		searchBox.submit();
-				  
+		
+		boolean lof_displayed = isButtenPresent(driver, By.id( "consequence_lof_variant_button" ));
+		
 		//in the new page, check the LoF function button
-		if( driver.findElement( By.id("consequence_lof_variant_button")).isDisplayed()) {
+		if( lof_displayed) {
 			
 			WebElement lof_button = driver.findElement(By.id("consequence_lof_variant_button"));
 			
@@ -124,5 +126,18 @@ public class D0627_tryPullData_from_ExAC {
 
 		
 	} //end run() method;
+
+
+	private boolean isButtenPresent(WebDriver driver, By id) {
+		// TODO Auto-generated method stub
+		
+		try {
+			driver.findElement(id);
+			return true;
+		}
+		catch (org.openqa.selenium.NoSuchElementException e){
+			return false;
+		}
+	}
 
 }//ee 
