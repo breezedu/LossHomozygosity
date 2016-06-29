@@ -37,12 +37,12 @@ public class D0627_tryPullData_from_ExAC {
 		//initiate 4 genes for testing 
 		//String[] geneNames = {"SAMD9", "TNN", "SAMD11", "GPR160", "AGAP8", "AGAP9"}  ; //
 		//Here, AGAP8 and AGAP9 do not have LoF variants;
-		//gene[689], gene[1558] do not have any variants;
+		//gene[689], gene[1558], gene[1559], gene[1560] 1613, do not have any variants; 
 		String[] geneNames = getNames.run(); 		
 		
 		
 		//for each gene name, call pullData_exac.run() method to pull CSV variants document from ExAC
-		for(int i=1558; i<geneNames.length; i++){
+		for(int i=1613; i<geneNames.length; i++){
 			
 			pullData_exac.run(geneNames[i]);
 			
@@ -85,37 +85,43 @@ public class D0627_tryPullData_from_ExAC {
 		searchBox.sendKeys( geneName );
 		searchBox.submit();
 				  
-		//in the new page, click the LoF function button
-		
-		if( driver.findElement(By.id("consequence_lof_variant_button")).isEnabled() ){
-		
+		//in the new page, check the LoF function button
+		if( driver.findElement( By.id("consequence_lof_variant_button")).isDisplayed()) {
+			
 			WebElement lof_button = driver.findElement(By.id("consequence_lof_variant_button"));
 			
 			//some genes do not have any variants; so in those cases, quit the explor directly; 
 	
-				
+			Thread.sleep(1000);  // Let the user actually see something!
+			//Also, this step is very import to make sure the code will export CSV document instead of TMP docs.	
+			
+			
 			lof_button.click();
 				  
-				  
-			//trigger the Export table to CSV button
-			WebElement ExportCSV_button = driver.findElement(By.id("export_to_csv"));
+			
+			if(driver.findElement(By.id( "export_to_csv" )).isDisplayed()){
 				
-			//some genes may not have any LoF variants, in that case, we have to check if the button is displayed or not;
-			ExportCSV_button.click(); 
-					
-			System.out.println(" The gene " + geneName + " does not have any LoF variants."); 
-			
+				//trigger the Export table to CSV button
+				WebElement ExportCSV_button = driver.findElement(By.id("export_to_csv"));
 				
-			Thread.sleep(1000);  // Let the user actually see something!
-			//Also, this step is very import to make sure the code will export CSV document instead of TMP docs.
+				//System.out.println(ExportCSV_button + " ? ");
+				//some genes may not have any LoF variants, in that case, we have to check if the button is displayed or not;
+				
+				
+				ExportCSV_button.click(); 
+				Thread.sleep(1000);		
+				//System.out.println(" The gene " + geneName + " does not have any LoF variants."); 				
+
+				
+			} //end inner if export_to_csv size != 0;
+
 			
-			driver.quit();
+		}//end outter in LoF button size != 0;
+				
 			
-		} //end if driver.findElement(By.id("consequence_lof_variant_button")).isDisplayed()
-		
-		
-		//quit driver
+			
 		driver.quit();
+
 		
 	} //end run() method;
 
