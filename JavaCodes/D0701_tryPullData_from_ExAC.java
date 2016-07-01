@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -73,6 +75,10 @@ public class D0701_tryPullData_from_ExAC {
 				
 			}
 			
+			
+			//rename the last CSV file downloaded with the gene_name
+			pullData_exac.reName_lastCSV(geneNames[i]);
+			
 			}//end for i<geneNames.length loop;
 		
 		
@@ -87,6 +93,36 @@ public class D0701_tryPullData_from_ExAC {
 		} //end main()
 
 	
+	
+	/**************
+	 * 
+	 * @param string
+	 */
+	private void reName_lastCSV(String geneName) {
+		// TODO Auto-generated method stub
+		
+		File folder = new File("C:/Users/Jeff/Downloads");
+		File[] CSV_list = folder.listFiles();
+		
+		
+		//1st, sort all files
+		Arrays.sort(CSV_list, new Comparator<File>(){
+			
+			public int compare(File f1, File f2){
+				return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified() );				
+				
+			}
+			
+		});
+		
+		//2nd reName the last one:
+		int last = CSV_list.length;
+		File new_file = new File("C:/Users/Jeff/Downloads/" + CSV_list[last-1].getName() );
+		new_file.renameTo( new File("C:/Users/Jeff/Downloads/" + geneName +"_LoF.CSV") );
+		
+	}
+
+
 	/*****************
 	 * pass by a value of string, geneName;
 	 * visit ExAC website, input the geneName into searchBox,
