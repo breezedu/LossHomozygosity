@@ -18,7 +18,7 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 		//get all genes names from getNames.run();
 		String[] geneNames = getNames.run();
 		
-		for(int i=0; i<geneNames.length; i++){
+		for(int i=15000; i<geneNames.length; i++){
 
 			calculate_allGene_Pi2g.run(geneNames[i]);
 			
@@ -48,6 +48,7 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 		 * BUT !!! we have to flop these two documents, because het.txt represents hom data and hom.txt represents het data
 		 * 
 		 */
+		System.out.println("step 1, reading hom and het data.");
 		
 		String route = "D:/PhD/LizDeidentified_151002/LizDeidentified_151002/";
 		String hom_data = "gene_samp_matrix_high_LOF_het.txt";
@@ -63,6 +64,9 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 		String[] title_line_hom = hom_reader.nextLine().split("\t");
 		String[] title_line_het = het_reader.nextLine().split("\t");
 		
+		
+		//in the LizDeidentified txt documents, both hom and het documents have exactly the same index;
+		//so here we assigned ttn_hom and ttn_het index the same value, i;
 		for(int i=0; i<title_line_hom.length; i++){
 			
 			if( title_line_hom[i].equals( gene_name ) ) ttn_hom_index = i;
@@ -70,7 +74,7 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 			if( title_line_het[i].equals( gene_name ) ) ttn_het_index = i;
 		}
 		
-		System.out.println("The indic are: " + ttn_hom_index + ", " + ttn_het_index); 
+		System.out.println("The indic of " + gene_name + " are: hom = " + ttn_hom_index + ", het = " + ttn_het_index); 
 		
 		
 		//initial two ArrayLists, to store het or hom numbers, n1 and n2;
@@ -93,7 +97,7 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 		
 		}//end while loop;
 		
-		System.out.print("Compare lengths of two arrayList, hom: " + hom_list.size() + ", het: " + het_list.size());
+		System.out.println("Compare lengths of two arrayList, hom: " + hom_list.size() + ", het: " + het_list.size());
 		
 		
 		//close scanners
@@ -112,6 +116,7 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 		 * if n2 > 0, ttn_pai2g = 1;
 		 * else, ttn_pai2g = 1 - (0.5)^(n1 - 1);
 		 */
+		System.out.println("Step 2, calculate Pai2g for current gene.");
 		
 		ArrayList<Double> gene_pai2g = new ArrayList<Double>();
 		
@@ -148,8 +153,8 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 		 * write these ttn_pai2g data into a txt document;
 		 */
 		
-		System.out.println("\nStep 3: \n");
-		File output = new File("D:/PhD/" + gene_name + "_Pai2g_observed_test.txt");
+		System.out.println("Step 3: write current gene's pai2g to a txt document.");
+		File output = new File("D:/PhD/Pai2g_allGenes/" + gene_name + "_Pai2g_observed_test.txt");
 		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
 		
 		//write title line: individual and ttn
@@ -162,6 +167,14 @@ public class D0712_calculate_P2g_all_Genes_ALS {
 		}
 		
 		outWriter.close();
+		
+		
+		/************************
+		 * end
+		 * 
+		 */
+		
+		System.out.println("\nEnd of gene " + gene_name + "\n");
 		
 	}//end of run()
 	
