@@ -27,24 +27,24 @@ geneName <- "TTN"
 ## read in Pai_2|g data from txt document:
 doc_name <- "D:/GitHub/LossHomozygosity/ALS_dataset/" + geneName + "_Pai2g_observed.txt"
 
-TTN_pai2g_observed <- read.table("D:/GitHubRepositories/LossHomozygosity/ALS_dataset/Observed_Pai2g_allgenes/A1BG_Pai2g_observed_test.txt", header = TRUE, sep = "\t")
+gene_pai2g_observed <- read.table("D:/GitHubRepositories/LossHomozygosity/ALS_dataset/Observed_Pai2g_allgenes/A1BG_Pai2g_observed_test.txt", header = TRUE, sep = "\t")
 
 ## extract only $TTN row
-TTN_pai2g_observed <- TTN_pai2g_observed$A1BG
+gene_pai2g_observed <- gene_pai2g_observed$geneName
 
 ## plot the homozygous variants
-plot(TTN_pai2g_observed)
+plot(gene_pai2g_observed)
 
 
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
 ## this is the expected probability of homozygity rate for ttn gene
-ttn_pai2g_expect <- 2.0655066872829075E-7
+gene_pai2g_expect <- 2.0655066872829075E-7
 
 
 ## test H0: \beta = 1 using a score test:
 ## the ith person's contribution to the marginal score
-Si <- TTN_pai2g_observed - ttn_pai2g_expect
+Si <- gene_pai2g_observed - gene_pai2g_expect
 summary(Si)
 
 ## get the Si_mean
@@ -64,6 +64,10 @@ Si_squre <- Si^2
 
 Chi_critical <- Si_mean^2 * length(Si) / sum(Si_squre) 
 Chi_critical
+
+
+
+########################################################
 
 Si_mean * sqrt(length(Si))/sqrt(var(Si))
 
