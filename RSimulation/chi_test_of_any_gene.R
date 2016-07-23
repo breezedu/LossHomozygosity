@@ -10,7 +10,7 @@ ALS_het <- read.table("D:/PhD/LizDeidentified_151002//LizDeidentified_151002/gen
 ## get TTN gene information
 ## ttn_hom is the count of n2
 ## ttn_het is the count of n1
-ttn_hom <- ALS_hom$TTN
+ttn_hom <- ALS_hom$TTNp
 ttn_het <- ALS_het$TTN
 
 ## for a given individual, 
@@ -22,15 +22,15 @@ summary(ttn_hom)
 summary(ttn_het)
 
 
-geneName <- "TTN"
+geneName <- "A1BG"
 ##################################################################
 ## read in Pai_2|g data from txt document:
 doc_name <- "D:/GitHub/LossHomozygosity/ALS_dataset/" + geneName + "_Pai2g_observed.txt"
 
-gene_pai2g_observed <- read.table("D:/GitHubRepositories/LossHomozygosity/ALS_dataset/Observed_Pai2g_allgenes/A1BG_Pai2g_observed_test.txt", header = TRUE, sep = "\t")
+gene_pai2g_observed <- read.table("D:/PhD/Pai2g_allGenes/TTN_Pai2g_observed_test.txt", header = TRUE, sep = "\t")
 
 ## extract only $TTN row
-gene_pai2g_observed <- gene_pai2g_observed$geneName
+gene_pai2g_observed <- gene_pai2g_observed[, 2]
 
 ## plot the homozygous variants
 plot(gene_pai2g_observed)
@@ -84,7 +84,7 @@ sum(Si)/sqrt(length(Si)*var(Si))
 1-pnorm(5.263353)
 ##[1] 7.072581e-08
 
-help(pnorm)
+## help(pnorm)
 mean(Si)
 
 
@@ -93,7 +93,8 @@ mean(Si)
 mean(Si)*sqrt(length(Si))/sqrt(var(Si))
 ##[1] 5.263353
 
-(mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2
+test_value <- (mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2
+test_value
 ##[1] 27.70288
 
 (mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2/length(Si)
@@ -106,10 +107,10 @@ Si_mean = mean(Si)
 Si_mean * sqrt(length(Si))/sqrt(var(Si))
 ##[1] 5.263353
 
-1- pchisq(27.7, 1)
+1- pchisq(test_value, 1)
 ##[1] 1.416627e-07
 
 
-( 1 - pchisq(27.702, 1)) / 2
+( 1 - pchisq(test_value, 1)) / 2
 ##[1] 7.075816e-08
 
