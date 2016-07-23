@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 
@@ -29,51 +31,62 @@ import java.util.Scanner;
  */
 public class D0722_Extract_exonHash_from_CCDSHs371 {
 
+	
+	/********
+	 * The main() method; 
+	 * create a new extract exon Hash from CCDS object, 
+	 * call run() method to get all exons, and update the HashMap<geneName, Exon_ArrayList>;
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
 	public static void main(String[] args) throws IOException{
 		
+		//create a new object of Extracting Exon Hash from CCDS document;
 		D0722_Extract_exonHash_from_CCDSHs371 get_exons = new D0722_Extract_exonHash_from_CCDSHs371();
 		
-		D0627_GetGeneNames_from_ALSData getNames = new D0627_GetGeneNames_from_ALSData();
+		// D0627_GetGeneNames_from_ALSData getNames = new D0627_GetGeneNames_from_ALSData();
+		
+		//Initial a HashMap;
+		HashMap<String, ArrayList<Exon_objects>> exonHash = new HashMap<String, ArrayList<Exon_objects>>();
+		
+		//call run() method, to get all exons, and update the HashMap;
+		get_exons.run( exonHash );
 		
 		
-		//the gene names from ALS
+		/***
+		 * the gene names from ALS
+		 *
 		String[] geneList = getNames.run();
 		
 		for( int i=0; i<geneList.length; i++){
 			
 			String gene_name = geneList[i];
 			
-			get_exons.run(gene_name);
+			get_exons.run(gene_name, exonHash);
 			
 			System.out.println(gene_name + " done.");
 			
 		}
-
+		*/
 				
 	} //end of main();
 
 	
 	
-	private void run(String geneName) throws IOException {
+	private void run(HashMap<String, ArrayList<Exon_objects>> exonHash) throws IOException {
 		// TODO Auto-generated method stub
 		//1st, find the routine to the CCDS15_exon_frame.txt document;
-		String routine = "D:/PhD/CCDS_exon_frames/";
-		String file_name = "0605_CCDS15_exon_frame.txt";
+		String routine = "D:/PhD/CCDS_exon_frames/Hs37.1/";
+		String file_name = "CCDS.current.txt";
 		
 		Scanner read_in = new Scanner(new File(routine + file_name));
-		
-		//2nd, inite a buffer writter:
-		//save the gene names to a txt document
-		File output = new File(routine + "/ALS_genes/" + geneName + "_exon_frame_CCDS15.txt");
-		BufferedWriter out_writer = new BufferedWriter(new FileWriter(output));
 		
 		
 		//3rd, get and write title line
 		String title_line = read_in.nextLine();
 		System.out.println("Title line: " + title_line);
-		out_writer.write(title_line + "\n");
-		
-		
+				
 		int totalExons = 0;
 		
 		while(read_in.hasNextLine()){
