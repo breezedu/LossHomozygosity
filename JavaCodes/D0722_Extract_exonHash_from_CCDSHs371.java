@@ -13,10 +13,16 @@ import java.util.Scanner;
  * 
  * Locally, the txt document could be read from folder D:\PhD\CCDS_exon_frames\Hs37.1\CCDS.current.txt
  * D:\PhD\CCDS_exon_frames\Hs37.1
- * Here we create a method, pass a gene name (string) to the method.
- * The method would read all exons listed in CCDS15_exon_frame.txt, 
- * Pick all exons followed by TTN gene name
- * Print all exons into one txt document TTN_exon_frame_CCDS15.txt.
+ * Here we create a method, pass a hashmap and a gene name to the method.
+ * The method would read all exons listed in CCDS.current.txt with build Hs37.1, 
+ * 
+ * Pick all exons followed by a given gene's name, create exon objects correspondly.
+ * put all these exon-objects into an ArrayList
+ * 
+ * take the gene name and the ArrayList as key and value, put them into the hashmap
+ * Return the HashMap
+ * 
+ * Print all exons into one txt docume.
  * 
  * @author Jeff
  *
