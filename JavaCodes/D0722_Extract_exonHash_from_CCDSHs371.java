@@ -147,6 +147,19 @@ public class D0722_Extract_exonHash_from_CCDSHs371 {
 			exons = exons.substring(1, exons.length()-1);
 			
 			String[] exonsPair = exons.split(", ");
+			//System.out.println("There are " + exonsPair.length + " exons on current gene \n" + exons);
+			
+			for(int i=0; i<exonsPair.length; i++){
+				
+				Exon_objects currExon = new Exon_objects();
+				
+				String[] starEnd = exonsPair[i].split("-");
+				
+				currExon.exon_name = "exon" + i;
+				currExon.exonStart = Integer.parseInt(starEnd[0]);
+				currExon.exonEnd = Integer.parseInt(starEnd[1]);
+				exonList.add(currExon);
+			}
 		}
 		
 		return exonList;
