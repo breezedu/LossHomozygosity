@@ -1,8 +1,6 @@
 package data_manipulation;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,35 +79,77 @@ public class D0722_Extract_exonHash_from_CCDSHs371 {
 		String file_name = "CCDS.current.txt";
 		
 		Scanner read_in = new Scanner(new File(routine + file_name));
-		
-		
+				
 		//3rd, get and write title line
+		// #chromosome	nc_accession	gene	gene_id	ccds_id	ccds_status	cds_strand	cds_from	cds_to	cds_locations	match_type
 		String title_line = read_in.nextLine();
 		System.out.println("Title line: " + title_line);
 				
-		int totalExons = 0;
+
 		
+		//check the CCDS document line by line:
+		int totalGenes = 0; 
 		while(read_in.hasNextLine()){
+
+			int totalExons = 0;
 			
 			String currLine = read_in.nextLine();
 			
 			String[] exons = currLine.split("\t");
 
+			String geneName = exons[2];
+			String Exons = exons[9];
 			
-			if(exons[1].equals(geneName)){
+			//A very important step: split the exons
+			// [934438-934811, 934905-934992, 935071-935166, 935245-935352]
+			ArrayList<Exon_objects> exonList = spliteExons(Exons);
+			
+			
+			totalExons = exonList.size();
+			
+			if(exonHash.containsKey(geneName)){
 				
-				totalExons++;
-				out_writer.write(currLine + "\n");
+				//merge current exonList with the exist exonList in the hashmap;
 				
-			} //end if condition
+			} else {
+				
+				exonHash.put(geneName, exonList); 
+				
+				totalGenes++;
+			}
+			
+			//printout each gene's exon number;
+			System.out.println("There are " + totalExons + " exons on gene " + geneName + ", based on different transcripts. ");
 			
 		}//end while loop;
 		
-		System.out.println("There are " + totalExons + " exons on gene " + geneName + ", based on different transcripts. ");
+		System.out.println("There are " + totalGenes + " genes.");
 		
 		read_in.close();
-		out_writer.close();
 	
 	}//end of run() method;
+
+
+	/*********
+	 * Split exons: 
+	 * [934438-934811, 934905-934992, 935071-935166, 935245-935352]
+	 * @param exons
+	 * @return
+	 */
+	private ArrayList<Exon_objects> spliteExons(String exons) {
+		// TODO Auto-generated method stub
+		
+		ArrayList<Exon_objects> exonList = new ArrayList<Exon_objects>();
+		
+		if(exons.length() > 2){
+			
+			//1st, remove the '[' and ']'
+			exons = exons.substring(1, exons.length()-1);
+			
+			String[] exonsPair = exons.split(", ");
+		}
+		
+		return exonList;
+	}
 	
 }// ee
