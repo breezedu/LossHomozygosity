@@ -24,6 +24,11 @@ import java.util.Scanner;
  *  The probability of having at least one variant on each of two gene copies 
  *  would be [1-(1-p1)*(1-p2)*(1-p3)] * [1-(1-p1)*(1-p2)*(1-p3)].
  *  
+ *  ************************************************************************************
+ *  RESULT: 
+ *  There are 414 variants on exons.
+ *  The probability of getting homozygos TTN gene: 3.6328594930727866E-5
+ *  ************************************************************************************
  * 
  * @author Jeff
  *
