@@ -71,7 +71,7 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 					
 					System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
 					
-					System.out.println(geneName[i] + "\t 0.0");
+					System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.0");
 					
 				}				
 				
@@ -188,7 +188,7 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		
 		//System.out.println( "The probability of getting homozygos on " );
 		
-		System.out.println( geneName + "\t" + homo);
+		System.out.println( geneName + "\t" + "Pai2|g" + "\t" + homo);
 		
 		/*****************************************************************************
 		 * The output of this java code:
