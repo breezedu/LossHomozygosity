@@ -52,11 +52,15 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		 * Start main() method 
 		 * 
 		 */
-
+		File output = new File("D:/PhD/ExAC_datasets/expected_Pai2g_all.txt");
+		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
+				
+		//write in the titleLine without any quotes.
+		outWriter.write("gene_name\texpected_Pai2g\n");
 
 		String[] geneName = getNames.run();
 		
-		for(int i=0; i<1800; i++){
+		for(int i=0; i<geneName.length; i++){
 			
 			System.out.println("GENE: " + geneName[i] + "\t" );
 			
@@ -72,13 +76,16 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 				
 				if( exonHash.containsKey(geneName[i]) && exonList.size() > 0 ){
 					
-					CSV2CCDS.run_with_exonInfo(geneName[i], exonList);
+					CSV2CCDS.run_with_exonInfo(geneName[i], exonList, outWriter);
 					
 				} else {
 					
 					//System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
 					// here else means there's not CSV data for current gene
-					System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.0");
+					
+					CSV2CCDS.run_without_exonInfo(geneName[i], outWriter);
+					
+					//System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.0");
 					
 				} //end inner if-else condition; this section handles CSV document exists condition; 				
 				
@@ -89,13 +96,16 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 				//System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
 				// here else means there's not CSV data for current gene
 				System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.0");
-								
+				outWriter.write(geneName[i] + "\t" + "0.0\n");				
 				
 			} //end outer if-else conditons; geneName[i] in HashMap && it's exonList is not empty;
 			
 			
 		}//end for i<500 loop
 		
+		
+		//close outWriter
+		outWriter.close(); 
 		
 	}// end main(); 
 	
@@ -105,9 +115,10 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 	 * run_without_exonInfo() method;
 	 * 
 	 * @param geneName
-	 * @throws FileNotFoundException
+	 * @param outWriter 
+	 * @throws IOException 
 	 */
-	private void run_without_exonInfo(String geneName) throws FileNotFoundException {
+	private void run_without_exonInfo(String geneName, BufferedWriter outWriter) throws IOException {
 		// TODO Auto-generated method stub
 		
 		//1st, get the variants ArrayList from  File("D:/PhD/ExAC_datasets/All/" + geneName + ".CSV")
@@ -129,7 +140,7 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		//System.out.println( "The probability of getting homozygos on " );
 				
 		System.out.println( geneName + "\t" + "Pai2|g" + "\t" + homo);
-	
+		outWriter.write(geneName + "\t" + homo + "\n");
 	
 	}//end run_without_exonInfo() method;
 	
@@ -170,13 +181,13 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		//System.out.println("\t variants reader, " + geneName + ".CSV title line done. " );
 				
 		//get index of position and allele_frequency; 
-		int index_pos = 1;
+		//int index_pos = 1;
 		int index_af = 14;
 				
 		String[] title = titleLine.split(",");
 		for(int i=0; i<title.length; i++){
 			
-			if(title[i].equals("Position")) 			index_pos = i;
+			//if(title[i].equals("Position")) 			index_pos = i;
 					
 			if(title[i].equals("Allele Frequency")) 	index_af = i;
 		}
@@ -186,7 +197,7 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 				
 				
 		//initial VariantsOnExons to indicate the number of variants hit exons;
-		int VariantsOnExons = 0;
+		//int VariantsOnExons = 0;
 				
 		//initial an ArrayList to store all allele-frequencies of variants on exons;
 		ArrayList<Double> alleleFreq_list = new ArrayList<Double>();
@@ -210,7 +221,7 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 			//split the line by ",";
 			String[] variants = currLine.split(",");
 					
-			int position = Integer.parseInt( variants[index_pos] );
+			//int position = Integer.parseInt( variants[index_pos] );
 					
 			alleleFreq_list.add( Double.parseDouble(variants[index_af]));
 					
@@ -240,9 +251,10 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 	 * 
 	 * @param geneName
 	 * @param exonList
+	 * @param outWriter 
 	 * @throws IOException
 	 */
-	public void run_with_exonInfo(String geneName, ArrayList<Exon_objects> exonList) throws IOException{
+	public void run_with_exonInfo(String geneName, ArrayList<Exon_objects> exonList, BufferedWriter outWriter) throws IOException{
 		
 		//1st, get the Variants ArrayList;
 		//ArrayList<Exon_objects> exonList = new ArrayList<Exon_objects>();
@@ -354,6 +366,7 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		//System.out.println( "The probability of getting homozygos on " );
 		
 		System.out.println( geneName + "\t" + "Pai2|g" + "\t" + homo);
+		outWriter.write(geneName + "\t" + homo + "\n"); 
 		
 		/*****************************************************************************
 		 * The output of this java code:
