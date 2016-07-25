@@ -2,6 +2,7 @@ package data_manipulation;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,46 +48,205 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		HashMap<String, ArrayList<Exon_objects>> exonHash = CCDSHash.run();
 		
 		
-		
+		/************************************************************
+		 * Start main() method 
+		 * 
+		 */
 
 
 		String[] geneName = getNames.run();
 		
-		for(int i=0; i<500; i++){
+		for(int i=0; i<1800; i++){
 			
-			System.out.print("GENE: " + geneName[i] + "\t" );
+			System.out.println("GENE: " + geneName[i] + "\t" );
 			
-			//create an arrayList to store all exon-objects;
+			//create an arrayList to store all exon-objects
 			ArrayList<Exon_objects> exonList = exonHash.get(geneName[i]);
 			
-			if(exonHash.containsKey(geneName[i]) && exonList.size() > 0){
+			//if the file geneName[i].CSV exist, call CSV2CCDS.run() method;
+			File variantCSV = new File("D:/PhD/ExAC_datasets/All/" + geneName[i] + ".CSV");
+			
+			
+			
+			if(variantCSV.exists() ){
 				
-				//if the file geneName[i].CSV exist, call CSV2CCDS.run() method;
-				File variantCSV = new File("D:/PhD/ExAC_datasets/All/" + geneName[i] + ".CSV");
-				if( variantCSV.exists() ){
+				if( exonHash.containsKey(geneName[i]) && exonList.size() > 0 ){
 					
-					CSV2CCDS.run(geneName[i], exonList);
+					CSV2CCDS.run_with_exonInfo(geneName[i], exonList);
 					
 				} else {
 					
-					System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
-					
+					//System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
+					// here else means there's not CSV data for current gene
 					System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.0");
 					
-				}				
+				} //end inner if-else condition; this section handles CSV document exists condition; 				
 				
-			} //end if geneName[i] in HashMap && it's exonList is not empty;
+				
+				//else, if the CSV document does not exist;
+			} else {
+									
+				//System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
+				// here else means there's not CSV data for current gene
+				System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.0");
+								
+				
+			} //end outer if-else conditons; geneName[i] in HashMap && it's exonList is not empty;
+			
+			
 		}//end for i<500 loop
 		
 		
 	}// end main(); 
 	
 	
-	public void run(String geneName, ArrayList<Exon_objects> exonList) throws IOException{
+	
+	/***********
+	 * run_without_exonInfo() method;
+	 * 
+	 * @param geneName
+	 * @throws FileNotFoundException
+	 */
+	private void run_without_exonInfo(String geneName) throws FileNotFoundException {
+		// TODO Auto-generated method stub
 		
+		//1st, get the variants ArrayList from  File("D:/PhD/ExAC_datasets/All/" + geneName + ".CSV")
+		ArrayList<Double> alleleFreq_list = get_freq_arraylist( geneName );
+		
+		//2nd, calculate the probability of homozygous:
+		double homo = 1;
+		double hit_one_gene = 1;
+				
+		for(int i=0; i<alleleFreq_list.size(); i++){
+					
+			hit_one_gene *= (1 - alleleFreq_list.get(i));
+		}
+				
+		hit_one_gene = 1 - hit_one_gene;
+				
+		homo = hit_one_gene * hit_one_gene;
+				
+		//System.out.println( "The probability of getting homozygos on " );
+				
+		System.out.println( geneName + "\t" + "Pai2|g" + "\t" + homo);
+	
+	
+	}//end run_without_exonInfo() method;
+	
+
+
+	private ArrayList<Double> get_freq_arraylist(String geneName) throws FileNotFoundException {
+		// TODO Auto-generated method stub
 		
 		//ArrayList<Exon_objects> exonList = new ArrayList<Exon_objects>();
-		System.out.println("\n There are " + exonList.size() + " exons on gene: " + geneName ); 
+		//System.out.println("\n There are " + exonList.size() + " exons on gene: " + geneName ); 
+				
+		//2nd, read-in TTN exac variants of LoF from D:/PhD/TTN_pulled_from_ExAC/exac_TTN_LoF.CSV
+		Scanner variants_reader = new Scanner(new File("D:/PhD/ExAC_datasets/All/" + geneName + ".CSV"));
+		/********
+		 * the first line:
+		 * "Chrom","Position","RSID","Reference","Alternate","Consequence","Protein Consequence","Transcript Consequence",
+		 * "Filter","Annotation","Flags","Allele Count","Allele Number","Number of Homozygotes","Allele Frequency",
+		 * "Allele Count African","Allele Number African","Homozygote Count African","Allele Count East Asian",
+		 * "Allele Number East Asian","Homozygote Count East Asian","Allele Count European (Non-Finnish)",
+		 * "Allele Number European (Non-Finnish)","Homozygote Count European (Non-Finnish)","Allele Count Finnish",
+		 * "Allele Number Finnish","Homozygote Count Finnish","Allele Count Latino","Allele Number Latino",
+		 * "Homozygote Count Latino","Allele Count Other","Allele Number Other","Homozygote Count Other",
+		 * "Allele Count South Asian","Allele Number South Asian","Homozygote Count South Asian"
+		 * 
+		 * the second line:
+		 * "2","179391750",".","G","A","p.Arg35989Ter","p.Arg35989Ter","c.107965C>T","PASS","stop gained",
+		 * "LC LoF","1","108206","0","0.000009242","0","9042","0","0","7868","0","0","60554","0","0",
+		 * "6278","0","1","10212","0","0","802","0","0","13450","0"
+		 * 
+		 * Since each item is wrapped by "", and seperated by comma, so we have to delete all "s, and split the string by comma.
+		 * then we keep the chrom, position, Allele Frequency. (so far only these columns) 
+		 * 
+		 */
+				
+				
+		String titleLine = variants_reader.nextLine();
+		titleLine = remove_quotes(titleLine);
+		//System.out.println("\t variants reader, " + geneName + ".CSV title line done. " );
+				
+		//get index of position and allele_frequency; 
+		int index_pos = 1;
+		int index_af = 14;
+				
+		String[] title = titleLine.split(",");
+		for(int i=0; i<title.length; i++){
+			
+			if(title[i].equals("Position")) 			index_pos = i;
+					
+			if(title[i].equals("Allele Frequency")) 	index_af = i;
+		}
+				
+		//printout the index of Position and Allele-Frequency;
+		//System.out.println("For each line of data, the variant position index: " + index_pos + ", Allele-Frequency index: " + index_af +"\n");
+				
+				
+		//initial VariantsOnExons to indicate the number of variants hit exons;
+		int VariantsOnExons = 0;
+				
+		//initial an ArrayList to store all allele-frequencies of variants on exons;
+		ArrayList<Double> alleleFreq_list = new ArrayList<Double>();
+						
+				
+		//initial a buffer-writer to write all variants within exons;
+		//File output = new File("D:/PhD/ExAC_datasets/All_variants_on_exons/" + geneName + "_variants_OnExons.txt");
+		//BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
+				
+		//write in the titleLine without any quotes.
+		//outWriter.write(titleLine + "\n");
+			
+				
+		while(variants_reader.hasNextLine()){
+					
+			String currLine = variants_reader.nextLine(); 
+			currLine = remove_quotes(currLine); 
+					
+			//System.out.println(currLine); 
+					
+			//split the line by ",";
+			String[] variants = currLine.split(",");
+					
+			int position = Integer.parseInt( variants[index_pos] );
+					
+			alleleFreq_list.add( Double.parseDouble(variants[index_af]));
+					
+			/****
+			if( check_If_hits_Exons(position, exonList) ){
+						
+				//System.out.println(" One hit: " + position);
+				VariantsOnExons ++; 
+				alleleFreq_list.add( Double.parseDouble(variants[index_af]));
+						
+				//outWriter.write(currLine + "\n");
+			}
+					
+			*/
+					
+		} //end while loop;
+				
+				
+		//System.out.println("\tThere are " + VariantsOnExons + " variants on exons.");
+		variants_reader.close();		
+		
+		return alleleFreq_list;
+	} //end get variant-frequence ArrayList method; 
+
+
+	/*******************
+	 * 
+	 * @param geneName
+	 * @param exonList
+	 * @throws IOException
+	 */
+	public void run_with_exonInfo(String geneName, ArrayList<Exon_objects> exonList) throws IOException{
+		
+		//1st, get the Variants ArrayList;
+		//ArrayList<Exon_objects> exonList = new ArrayList<Exon_objects>();
+		//System.out.println("\n There are " + exonList.size() + " exons on gene: " + geneName ); 
 		
 		//2nd, read-in TTN exac variants of LoF from D:/PhD/TTN_pulled_from_ExAC/exac_TTN_LoF.CSV
 		Scanner variants_reader = new Scanner(new File("D:/PhD/ExAC_datasets/All/" + geneName + ".CSV"));
@@ -133,18 +293,18 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		
 		
 		//initial VariantsOnExons to indicate the number of variants hit exons;
-		int VariantsOnExons = 0;
+		//int VariantsOnExons = 0;
 		
 		//initial an ArrayList to store all allele-frequencies of variants on exons;
 		ArrayList<Double> alleleFreq_list = new ArrayList<Double>();
 				
 		
 		//initial a buffer-writer to write all variants within exons;
-		File output = new File("D:/PhD/ExAC_datasets/All_variants_on_exons/" + geneName + "_variants_OnExons.txt");
-		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
+		//File output = new File("D:/PhD/ExAC_datasets/All_variants_on_exons/" + geneName + "_variants_OnExons.txt");
+		//BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
 		
 		//write in the titleLine without any quotes.
-		outWriter.write(titleLine + "\n");
+		//outWriter.write(titleLine + "\n");
 		
 		
 		while(variants_reader.hasNextLine()){
@@ -159,18 +319,23 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 			
 			int position = Integer.parseInt( variants[index_pos] );
 			
+			alleleFreq_list.add( Double.parseDouble(variants[index_af]));
+			
+			
 			if( check_If_hits_Exons(position, exonList) ){
 				
 				//System.out.println(" One hit: " + position);
-				VariantsOnExons ++; 
+				//VariantsOnExons ++; 
 				alleleFreq_list.add( Double.parseDouble(variants[index_af]));
 				
-				outWriter.write(currLine + "\n");
-			}
-		}
+				//outWriter.write(currLine + "\n");
+			}		
+			
+			
+		} //end while loop;
 		
 		
-		System.out.println("\tThere are " + VariantsOnExons + " variants on exons.");
+		//System.out.println("\tThere are " + VariantsOnExons + " variants on exons.");
 		
 		
 		//3rd, calculate the probability of homozygous:
@@ -208,8 +373,9 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 		
 		//close all file readers
 		variants_reader.close();
-		outWriter.close();
-	}//end run(geneName)
+		//outWriter.close();
+		
+	}//end run_withexonInfo(geneName)
 
 	
 	/*******************
