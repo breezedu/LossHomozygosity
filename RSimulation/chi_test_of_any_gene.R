@@ -3,34 +3,34 @@
 ##
 
 ## read all genes information from ALS dataset 
-ALS_hom <- read.table("D:/PhD/LizDeidentified_151002/LizDeidentified_151002/gene_samp_matrix_high_LOF_het.txt", header = TRUE, sep = "\t")
-
-ALS_het <- read.table("D:/PhD/LizDeidentified_151002//LizDeidentified_151002/gene_samp_matrix_high_LOF_hom.txt", header = TRUE, sep = "\t")
+## ALS_hom <- read.table("D:/PhD/LizDeidentified_151002/LizDeidentified_151002/gene_samp_matrix_high_LOF_het.txt", header = TRUE, sep = "\t")
+##
+## ALS_het <- read.table("D:/PhD/LizDeidentified_151002//LizDeidentified_151002/gene_samp_matrix_high_LOF_hom.txt", header = TRUE, sep = "\t")
 
 ## get TTN gene information
 ## ttn_hom is the count of n2
 ## ttn_het is the count of n1
-ttn_hom <- ALS_hom$TTN
-ttn_het <- ALS_het$TTN
+## ttn_hom <- ALS_hom$TTN
+## ttn_het <- ALS_het$TTN
 
-## for a given individual, 
+#### for a given individual, 
 #### the \Pi_2|g would be 0, if both n1 <=1 & n2=2
 #### the \Pi_2|g would be 1 - (0.5)^(n1-1), if n1 >1 & n2=0
 #### the \Pi_2|g would be 1, if n2 > 0
 
-summary(ttn_hom)
-summary(ttn_het)
+## summary(ttn_hom)
+## summary(ttn_het)
 
 
-geneName <- "TTN"
+## geneName <- "TTN"
 ##################################################################
 ## read in Pai_2|g data from txt document:
 doc_name <- "D:/GitHub/LossHomozygosity/ALS_dataset/" + geneName + "_Pai2g_observed.txt"
 
-gene_pai2g_observed <- read.table("D:/GitHubRepositories/LossHomozygosity/ALS_dataset/Observed_Pai2g_allgenes/A1BG_Pai2g_observed_test.txt", header = TRUE, sep = "\t")
+gene_pai2g_observed <- read.table("D:/GitHub/LossHomozygosity/ALS_dataset/Observed_Pai2g_allgenes/A1BG_Pai2g_observed_test.txt", header = TRUE, sep = "\t")
 
-## extract only $TTN row
-gene_pai2g_observed <- gene_pai2g_observed$geneName
+## extract only $geneName row, the second column
+gene_pai2g_observed <- gene_pai2g_observed[, 2]
 
 ## plot the homozygous variants
 plot(gene_pai2g_observed)
