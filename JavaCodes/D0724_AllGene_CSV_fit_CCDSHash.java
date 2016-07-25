@@ -60,6 +60,13 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 
 		String[] geneName = getNames.run();
 		
+		int CSV_count = 0;
+		int CSV_abscent = 0;
+		int Hash_count = 0;
+		int Hash_abscent = 0;
+		int CSVabs_hash_count = 0;
+		int CSVabs_hash_abs = 0;
+		
 		for(int i=0; i<geneName.length; i++){
 			
 			System.out.println("GENE: " + geneName[i] + "\t" );
@@ -74,12 +81,17 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 			
 			if(variantCSV.exists() ){
 				
+				CSV_count ++;
+				
 				if( exonHash.containsKey(geneName[i]) && exonList.size() > 0 ){
+					
+					Hash_count++;
 					
 					CSV2CCDS.run_with_exonInfo(geneName[i], exonList, outWriter);
 					
 				} else {
 					
+					Hash_abscent ++;
 					//System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
 					// here else means there's not CSV data for current gene
 					
@@ -92,17 +104,36 @@ public class D0724_AllGene_CSV_fit_CCDSHash {
 				
 				//else, if the CSV document does not exist;
 			} else {
-									
+							
+				CSV_abscent ++;
+				
+				if( exonHash.containsKey(geneName[i]) && exonList.size() > 0 ){
+					
+					CSVabs_hash_count++;
+					
+				} else {
+					
+					CSVabs_hash_abs ++;
+
+					
+				} //end inner if-else condition; this section handles CSV document exists condition; 	
+				
+				
 				//System.out.println(" There are " + exonList.size() + " exons on gene " + geneName[i]);
 				// here else means there's not CSV data for current gene
-				System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.0");
+				System.out.println(geneName[i] + "\t" + " Pai2|g" + "\t" + "0.000000");
 				outWriter.write(geneName[i] + "\t" + "0.0\n");				
 				
 			} //end outer if-else conditons; geneName[i] in HashMap && it's exonList is not empty;
 			
 			
-		}//end for i<500 loop
+		}//end for i<geneName.length loop
 		
+		
+		//printout marginal counts for each condition;
+		System.out.println("CSV_count: " + CSV_count + "\nHash_count: " + Hash_count + "\nHash_abscent: " + Hash_abscent
+							+ "\nCSV_abscent: " + CSV_abscent + "\nCSVabs_hash_count: " + CSVabs_hash_count + 
+							"\nCSVabs_hash_abs: " + CSVabs_hash_abs);
 		
 		//close outWriter
 		outWriter.close(); 
