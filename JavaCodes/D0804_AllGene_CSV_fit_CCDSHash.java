@@ -51,6 +51,9 @@ public class D0804_AllGene_CSV_fit_CCDSHash {
 		/************************************************************
 		 * Start main() method 
 		 * 
+		 * 1st, get gene region for each gene in the ALS dataset
+		 * for each gene, we have to figure out chromosome, and start-end index
+		 * 
 		 */
 		File output = new File("D:/PhD/ExAC_datasets/expected_Pai2g_all.txt");
 		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
