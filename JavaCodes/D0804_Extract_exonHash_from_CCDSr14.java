@@ -117,6 +117,8 @@ public class D0804_Extract_exonHash_from_CCDSr14 {
 			String currLine = read_in.nextLine();
 			
 			String[] exons = currLine.split("\t");
+			
+			String chr = exons[0];
 
 			String geneName = exons[2];
 			String Exons = exons[9];
@@ -128,7 +130,7 @@ public class D0804_Extract_exonHash_from_CCDSr14 {
 			
 			//A very important step: split the exons
 			// [934438-934811, 934905-934992, 935071-935166, 935245-935352]
-			ArrayList<Exon_objects> exonList = spliteExons(Exons, geneName, gene_start, gene_end);
+			ArrayList<Exon_objects> exonList = spliteExons(Exons, chr, geneName, gene_start, gene_end);
 			
 			
 			//totalExons = exonList.size();
@@ -168,11 +170,12 @@ public class D0804_Extract_exonHash_from_CCDSr14 {
 	 * [934438-934811, 934905-934992, 935071-935166, 935245-935352]
 	 * @param exons
 	 * @param geneName 
+	 * @param chr 
 	 * @param gene_end 
 	 * @param gene_start 
 	 * @return
 	 */
-	private ArrayList<Exon_objects> spliteExons(String exons, String geneName, int gene_start, int gene_end) {
+	private ArrayList<Exon_objects> spliteExons(String exons, String geneName, String chr, int gene_start, int gene_end) {
 		// TODO Auto-generated method stub
 		
 		ArrayList<Exon_objects> exonList = new ArrayList<Exon_objects>();
@@ -189,6 +192,9 @@ public class D0804_Extract_exonHash_from_CCDSr14 {
 			for(int i=0; i<exonsPair.length; i++){
 				
 				Exon_objects currExon = new Exon_objects();
+				
+				//pass chromosome to the exon object
+				currExon.chr = chr;
 				
 				//get the gene_name, start, and end index for the gene
 				currExon.gene_name = geneName;
