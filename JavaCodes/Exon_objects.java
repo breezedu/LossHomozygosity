@@ -1,4 +1,4 @@
-package coursera_java_duke;
+package data_manipulation;
 
 /***************
  * the first  line: 
@@ -12,9 +12,12 @@ package coursera_java_duke;
  */
 public class Exon_objects {
 	
+	String chr;
+	
 	String gene_name;
 	int geneStart;
 	int geneEnd;
+	
 	String exon_name;
 	int exonStart;
 	int exonEnd;
