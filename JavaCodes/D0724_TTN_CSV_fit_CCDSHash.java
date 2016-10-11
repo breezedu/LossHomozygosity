@@ -49,10 +49,10 @@ public class D0724_TTN_CSV_fit_CCDSHash {
 		//create an arrayList to store all exon-objects;
 		ArrayList<Exon_objects> exonList = exonHash.get("TTN");
 				
-		System.out.println("There are " + exonList.size() + " exons in current gene: " + exonList.get(0).gene_name); 
+		System.out.println("There are " + exonList.size() + " exons in current gene: " + exonList.get(0).gene_name + ".. " + exonList.get(0).exon_name); 
 		
 		//2nd, read-in TTN exac variants of LoF from D:/PhD/TTN_pulled_from_ExAC/exac_TTN_LoF.CSV
-		Scanner variants_reader = new Scanner(new File("D:/PhD/ExAC_datasets/All/TTN.CSV"));
+		Scanner variants_reader = new Scanner(new File("D:/PhD/ExAC_datasets/All_LOF/TTN.CSV"));
 		/********
 		 * the first line:
 		 * "Chrom","Position","RSID","Reference","Alternate","Consequence","Protein Consequence","Transcript Consequence",
