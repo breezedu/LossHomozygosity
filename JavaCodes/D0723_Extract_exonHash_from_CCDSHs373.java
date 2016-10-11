@@ -48,10 +48,16 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 		HashMap<String, ArrayList<Exon_objects>> exonHash = get_exons.run();
 		
 		
+		//some genes, like PFDN6L, do not have any exons;
+		//1	NC_000001.9	PFDN6L	80098	CCDS468.1	Withdrawn	+	-	-	-	Partial
+		System.out.println("The # of Exons on PFDN6: " + exonHash.get("PFDN6").size());
 		
+		//get all gene names with GetGeneNames_from_ALSData object;
 		D0627_GetGeneNames_from_ALSData getNames = new D0627_GetGeneNames_from_ALSData();
 		String[] geneList = getNames.run();
 		
+		
+		//check all gene names in ALS, to see if they are presented in the HashMap:
 		int notInHash = 0;
 		for( int i=0; i<geneList.length; i++){
 			
@@ -63,29 +69,43 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 				System.out.println(gene_name + " not in the HashMap. ");
 			}
 			
+			if( exonHash.get(geneList[i]).size() < 1)
+				System.out.println("Gene: " + gene_name + " has no exons.");
 		}
+		
+		//printout how many genes are not presented in the HashMap;
 		System.out.println("There are " + notInHash + " genes not in the hashmap. ");
 				
 	} //end of main();
 
 	
-	
-	private HashMap<String, ArrayList<Exon_objects>> run() throws IOException {
+	/**************
+	 * run() method
+	 * read in exon frames from local CCDS.current.txt document;
+	 * store <geneName, Exon_ArrayList> as key-value paire to a hashmap;
+	 * return the hashmap
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	HashMap<String, ArrayList<Exon_objects>> run() throws IOException {
 		// TODO Auto-generated method stub
 		//1st, find the routine to the CCDS15_exon_frame.txt document;
 		String routine = "D:/PhD/CCDS_exon_frames/Hs37.3/";
 		String file_name = "CCDS.current.txt";
+		
+		routine = "D:/PhD/CCDS_exon_frames/r14/";
+		file_name = "CCDS.current_30Oct13_release14_PUBLIConly.txt";
 		
 		Scanner read_in = new Scanner(new File(routine + file_name));
 				
 		//2nd, get and write title line
 		// #chromosome	nc_accession	gene	gene_id	ccds_id	ccds_status	cds_strand	cds_from	cds_to	cds_locations	match_type
 		String title_line = read_in.nextLine();
-		System.out.println("Title line: " + title_line);
+		System.out.println("CCDS title line: " + title_line);
 		
 		
-		//3rd, initial a hashmap to store geneName and Exon-arrayList
-				
+		//3rd, initial a hashmap to store geneName and Exon-arrayList				
 		HashMap<String, ArrayList<Exon_objects>> exonHash = new HashMap<String, ArrayList<Exon_objects>>();
 		
 		//check the CCDS document line by line:
@@ -103,7 +123,7 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 			
 			//A very important step: split the exons
 			// [934438-934811, 934905-934992, 935071-935166, 935245-935352]
-			ArrayList<Exon_objects> exonList = spliteExons(Exons);
+			ArrayList<Exon_objects> exonList = spliteExons(geneName, Exons);
 			
 			
 			totalExons = exonList.size();
@@ -125,7 +145,7 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 			}
 			
 			//printout each gene's exon number;
-			System.out.println("There are " + totalExons + " exons on gene " + geneName + ", based on different transcripts. ");
+			//System.out.println("There are " + totalExons + " exons on gene " + geneName + ", based on different transcripts. ");
 			
 		}//end while loop;
 		
@@ -142,12 +162,14 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 	 * Split exons: 
 	 * [934438-934811, 934905-934992, 935071-935166, 935245-935352]
 	 * @param exons
+	 * @param exons2 
 	 * @return
 	 */
-	private ArrayList<Exon_objects> spliteExons(String exons) {
+	private ArrayList<Exon_objects> spliteExons(String geneName, String exons) {
 		// TODO Auto-generated method stub
 		
 		ArrayList<Exon_objects> exonList = new ArrayList<Exon_objects>();
+		
 		
 		if(exons.length() > 2){
 			
@@ -162,7 +184,7 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 				Exon_objects currExon = new Exon_objects();
 				
 				String[] starEnd = exonsPair[i].split("-");
-				
+				currExon.gene_name = geneName;
 				currExon.exon_name = "exon" + i;
 				currExon.exonStart = Integer.parseInt(starEnd[0]);
 				currExon.exonEnd = Integer.parseInt(starEnd[1]);
