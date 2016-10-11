@@ -30,6 +30,8 @@ TTN_pai2g_observed <- read.table("D:/GitHub/LossHomozygosity/ALS_dataset/TTN_Pai
 ## extract only $TTN row
 TTN_pai2g_observed <- TTN_pai2g_observed$TTN
 
+summary(TTN_pai2g_observed)
+
 ## plot the homozygous variants
 plot(TTN_pai2g_observed)
 
@@ -37,7 +39,7 @@ plot(TTN_pai2g_observed)
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
 ## this is the expected probability of homozygity rate for ttn gene
-ttn_pai2g_expect <- 3.6328594930717866E-5
+ttn_pai2g_expect <- 1.977227008827069E-4
 
 
 ## test H0: \beta = 1 using a score test:
