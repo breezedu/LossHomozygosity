@@ -186,7 +186,7 @@ public class D1012_MonteCarol_TTN_fit_CCDSHash {
 		
 		
 		//4th, Monte Carol Integration
-		for(int i=0; i<10000000; i++){
+		for(int i=0; i<1000000; i++){
 			
 			double Pai2g2Rhgo = MonteCarol(alleleFreq_list);
 			
@@ -203,21 +203,24 @@ public class D1012_MonteCarol_TTN_fit_CCDSHash {
 		
 		//4.1 get the arrayList of qualified allele frequencies alleleFreq_list
 		//4.2 get an range of random integers for each allele frequency
-
-		double Pai2g = 0.0;
 		double Rhog = 1.0;
 		int n1 = 0;
 		int n2 = 0;
 		
+		//check every mutation sites along the gene (ttn)
 		for(int i=0; i<alleleFreq_list.size(); i++){
-			int range = (int) ( 1/alleleFreq_list.get(i)) * 10;
-			int pivot1 = range/2 - 5;
-			int pivot2 = range/2 + 5;
+			
+			//get allele frequence for current index i
+			double af = alleleFreq_list.get(i);
+			
+			double range = (int) ( 1/af) * 10;
+			double pivot1 = range/2 - 5;
+			double pivot2 = range/2 + 5;
 
 			
 		//	System.out.println(alleleFreq_list.get(i) + "\t  " + range + "\t [" + (range/2-5) +"-" + (range/2+5)+"]"); 
-			int random1 = (int)(Math.random() * range);
-			int random2 = (int)(Math.random() * range);
+			double random1 = (Math.random() * range);
+			double random2 = (Math.random() * range);
 			
 			int hit = 0;
 			if(random1 >= pivot1 && random1 <= pivot2)
@@ -252,14 +255,14 @@ public class D1012_MonteCarol_TTN_fit_CCDSHash {
 		
 		
 		//calculate Pai2g based on n1 and n2 values
-		//double Pai2g = 0;
+		double Pai2g = 0;
 		
 		if(n2 > 0) {
 			
 			//System.out.println("get one n2.");
 			Pai2g = 1;
 		
-		} else if( n1 < 2 ) {
+		} else if( n1 < 1 ) {
 			
 			Pai2g = 0;
 			
@@ -269,7 +272,8 @@ public class D1012_MonteCarol_TTN_fit_CCDSHash {
 		}
 		
 	//	System.out.println("The Pai2_g * Rho = " + Pai2g * Rhog); 
-		if(Pai2g > 0) System.out.print("n1=" + n1 +" n2=" + n2 + ", rho: " + Rhog);
+		if(Pai2g > 0) 
+			System.out.print("n1=" + n1 +" n2=" + n2 + ", rho: " + Rhog);
 		
 		return Pai2g * Pai2g * Rhog;
 	}
