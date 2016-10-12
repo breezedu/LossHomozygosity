@@ -184,17 +184,84 @@ public class D1011_MonteCarol_TTN_fit_CCDSHash {
 		
 		
 		//4th, Monte Carol Integration
-		//4.1 get the arrayList of qualified allele frequencies alleleFreq_list
-		//4.2 get an range of random integers for each allele frequency
-		for(int i=0; i<10; i++){
-			System.out.print("  " + 1/alleleFreq_list.get(i) ); 
+		for(int i=0; i<10000000; i++){
 			
+			double Pai2gTimesRhgo = MonteCarol(alleleFreq_list);
+			
+			if(Pai2gTimesRhgo > 0)
+				System.out.println("This Pai2gTimesRhgo: " + Pai2gTimesRhgo);
 		}
 		
 		
 	}//end main()
 
 	
+	private static double MonteCarol(ArrayList<Double> alleleFreq_list) {
+		// TODO Auto-generated method stub
+		
+		//4.1 get the arrayList of qualified allele frequencies alleleFreq_list
+		//4.2 get an range of random integers for each allele frequency
+
+		double Pai2g = 1;
+		double Rhog = 1;
+		int n1 = 0;
+		int n2 = 0;
+		
+		for(int i=0; i<alleleFreq_list.size(); i++){
+			int range = (int) ( 1/alleleFreq_list.get(i)) * 10;
+			int pivot1 = range/2 - 5;
+			int pivot2 = range/2 + 5;
+
+			
+		//	System.out.println(alleleFreq_list.get(i) + "\t  " + range + "\t [" + (range/2-5) +"-" + (range/2+5)+"]"); 
+			int random1 = (int)(Math.random() * range*10);
+			int random2 = (int)(Math.random() * range*10);
+			
+			if(random1 >= pivot1 && random1 <= pivot2 && random2 >= pivot1 && random2 <= pivot2){
+
+				n2 ++; 
+				Rhog *= alleleFreq_list.get(i);
+				Rhog *= alleleFreq_list.get(i);
+				
+			} else if (random1 >= pivot1 && random1 <= pivot2){
+				
+				n1 ++;
+				Rhog *= alleleFreq_list.get(i);
+				
+			} else if (random2 >= pivot1 && random2 <= pivot2){
+				
+				n1 ++; 
+				Rhog *= alleleFreq_list.get(i);
+				
+			} //end if-else n1 and n2 conditions;
+			
+			
+		}//end for loop; 
+		
+		
+		//calculate Pai2g based on n1 and n2 values
+		//double Pai2g = 0;
+		
+		if(n2 > 0) {
+			
+			System.out.println("get one n2.");
+			Pai2g = 1;
+		
+		} else if( n1 < 2 ) {
+			
+			Pai2g = 0;
+			
+		} else {
+			
+			Pai2g = 1 - Math.pow(0.5, n1 -1);
+		}
+		
+	//	System.out.println("The Pai2_g * Rho = " + Pai2g * Rhog); 
+		
+		return Pai2g * Rhog;
+	}
+
+
 	/*******************
 	 * check if a variant hits any exon
 	 * @param position
