@@ -77,22 +77,19 @@ sum(Si)^2 / Si_var / length(Si)
 
 
 
-
 ##############################################
 ## after applied fisher information 
 ## after applied Monte Carol integration
 ##############################################
-##
 
 ttn_pai2g_times_rho <- 1.977227008827069E-4
 
-## this is the Pai_2g square 
+## this is the Pai_2g square, simulated by monte carol, 
+## everytime the value would be slight different after simulation
 ttn_pai2g_sqr_montecarol <- 1.2026E-4
 
 Si_square2 <-  (TTN_pai2g_observed - ttn_pai2g_expect)^2 
-Si_square2
 mean(Si_square2)
-
 
 var_fisher <- ttn_pai2g_sqr_montecarol - ttn_pai2g_expect^2
 var_fisher
@@ -105,5 +102,8 @@ chi_sqr2
 
 1 - pchisq(23.529, 1)
 ## 1.230451e-06
+
+(1 - pchisq(23.529, 1))/2
+6.152254e-07
 ############################
 
