@@ -108,11 +108,13 @@ Si_mean * sqrt(length(Si))/sqrt(var(Si))
 ( 1 - pchisq(25.96067, 1)) / 2
 ##[1] 1.742221e-08
 
+
+
 ##############################################
 ## after applied fisher information 
 ## after applied Monte Carol integration
 ttn_pai2g_times_rho <- 1.977227008827069E-4
-ttn_pai2g_sqr_montecarol <- 1.8455E-5
+ttn_pai2g_sqr_montecarol <- 1.8455E-4
 
 Si_square2 <-  (TTN_pai2g_observed - ttn_pai2g_expect)^2 
 Si_square2
@@ -128,9 +130,9 @@ var_fisher
 (mean(Si_square2) * sqrt(length(Si_square2))) /sqrt(ttn_pai2g_sqr_montecarol - ttn_pai2g_expect^2) 
 #36.385
 
-chi_sqr2 <- sum(Si_square2)/(ttn_pai2g_sqr_montecarol - ttn_pai2g_times_rho^2) 
+chi_sqr2 <- sum(Si_square2)/(ttn_pai2g_sqr_montecarol - ttn_pai2g_times_rho^2)/length(Si_square2) 
 chi_sqr2 
 
-1 - pchisq(36.385, 1)
+(1 - pchisq(15.3307, 1))/2
 ## 1.619448e-09
 ############################
