@@ -66,6 +66,8 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 		
 		/**************************************************************************************************************/		
 		/**************************************************************************************************************
+		 * Part II
+		 * 
 		 * 
 		 */
 		//2nd, read-in TTN exac variants of LoF from D:/PhD/TTN_pulled_from_ExAC/exac_TTN_LoF.CSV
@@ -165,6 +167,9 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 			
 		} //end while loop; 
 		
+		variants_reader.close();
+		outWriter.close();
+		
 		System.out.println("There are " + VariantsOnExons + " variants on exons.......");
 		
 		
@@ -208,8 +213,7 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 		 *****************************************************************************/
 		
 
-		variants_reader.close();
-		outWriter.close();
+
 		
 		
 		/**************************************************************************************************************/
@@ -334,7 +338,9 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 	}
 
 
-	/*******************
+	
+	
+	/*******************************************************************************************
 	 * check if a variant hits any exon
 	 * @param position
 	 * @param exonList
