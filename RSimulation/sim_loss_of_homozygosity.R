@@ -19,22 +19,27 @@
 
 ## initialize the parameters: 
 ## sites/size/upper bound/baeline/
-nsites<-10              #number of polymorphic qualifying sites in gene
-n<-5000                 #sample size
-p.upper<-0.01           #upper bound on qualifying variants
-b.v<-.95                # baseline viability (probability of being viable give zero or one affected gene copies)
-bta<-1/10               # relative risk of viability given 2 affected copies versus baseline
-nsim<-100               #
-s<-c(rep(0,nsim))       #
+nsites <- 500                 # number of polymorphic qualifying sites in gene
+n <- 5000                     # sample size, 5000 individuals
+
+## Have to set the p.upper at >2e-4, NA will be produced.........
+p.upper <- 0.0004               # upper bound on qualifying variants
 
 
-g<-array(0,dim=c(n,nsites,2))
-x<-c(rep(0,n))
-v<-c(rep(0,n))
-n1<-c(rep(0,n))
-n2<-c(rep(0,n))
-pi2.g<-c(rep(0,n))
-p<-runif(nsites,min=2/(2*n),max=p.upper)
+b.v <- 0.95                    # baseline viability (probability of being viable give zero or one affected gene copies)
+bta <- 1/10                   # relative risk of viability given 2 affected copies versus baseline
+nsim <- 100                   # loop of simulations
+s <- c(rep(0,nsim))           # nsim # of 0s
+
+
+g  <-  array(0,dim=c(n,nsites,2))       # genotypes
+x  <-  c(rep(0,n))                      #
+v  <-  c(rep(0,n))
+n1 <-  c(rep(0,n))                      # number of het
+n2 <-  c(rep(0,n))                      # number of hom
+pi2.g <-  c(rep(0,n))                   # Pai_2|g 
+
+p <-  runif(nsites,min=2/(2*n),max=p.upper)          ## 
 
 
 
@@ -132,5 +137,5 @@ for(j in 1:nsim){
 
 } #end for(j in 1:nsim){
 
-sum(s<qnorm(.05))/nsim
+sum( s < qnorm(.05) )/nsim
 

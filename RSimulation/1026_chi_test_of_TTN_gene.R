@@ -86,13 +86,15 @@ ttn_pai2g_times_rho <- 1.977227008827069E-4
 
 ## this is the Pai_2g square, simulated by monte carol, 
 ## everytime the value would be slight different after simulation
-ttn_pai2g_sqr_montecarol <- 1.2026E-4
+ttn_pai2g_sqr_montecarol <- 1.2026E-3
 
 Si_square2 <-  (TTN_pai2g_observed - ttn_pai2g_expect)^2 
 mean(Si_square2)
 
 var_fisher <- ttn_pai2g_sqr_montecarol - ttn_pai2g_expect^2
 var_fisher
+
+
 
 ## is this equation correct??
 sum(Si_square2) / (var_fisher * length(Si_square2))
