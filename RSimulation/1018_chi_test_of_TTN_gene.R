@@ -40,6 +40,7 @@ plot(TTN_pai2g_observed)
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
 ## this is the expected probability of homozygity rate for ttn gene
 ttn_pai2g_expect <- 1.977227008827069E-4
+ttn_pai2g_expect <- 3.6328594930727866E-5
 
 
 ## test H0: \beta = 1 using a score test:
@@ -61,6 +62,8 @@ Si_var
 ##
 
 Si_squre <- Si^2
+
+sum(Si_squre)/Si_var
 
 Chi_critical <- Si_mean^2 * length(Si) / sum(Si_squre) 
 Chi_critical
@@ -88,8 +91,15 @@ mean(Si)
 mean(Si)*sqrt(length(Si))/sqrt(var(Si))
 ##[1] 5.095161
 
+<<<<<<< HEAD
+(mean(Si)*sqrt(length(Si))/sqrt(var(Si) ) )^2
+##[1] 27.70288
+=======
 (mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2
 ##[1] 25.96067
+>>>>>>> 3cc210e227900e59e033e885798163f7d0d4bb95
+
+(mean(Si)*sqrt(length(Si))/sqrt(var(Si)) )
 
 (mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2/length(Si)
 ##[1] 0.008520075
@@ -117,7 +127,10 @@ ttn_pai2g_times_rho <- 1.977227008827069E-4
 ttn_pai2g_sqr_montecarol <- 1.8455E-4
 
 Si_square2 <-  (TTN_pai2g_observed - ttn_pai2g_expect)^2 
+summary(Si_square2)
+
 Si_square2
+
 mean(Si_square2)
 
 var_fisher <- ttn_pai2g_sqr_montecarol - ttn_pai2g_expect^2
@@ -126,6 +139,27 @@ var_fisher
 ## is this equation correct??
 (mean(Si_square2) * sqrt(length(Si_square2))) / sqrt(var_fisher)
 
+<<<<<<< HEAD
+##(mean(Si)*sqrt(length(Si))/sqrt(var(Si)))^2
+
+(mean(Si_square2) * sqrt(length(Si_square2)) /sqrt(sqrt(ttn_pai2g_sqr_montecarol) - ttn_pai2g_expect^2) )^2
+#36.36
+
+
+
+chi_sqr2 <- Si_square2/(ttn_pai2g_sqr_montecarol - ttn_pai2g_times_rho^2) 
+
+chi_sqr2
+
+1 - pchisq(36.36, 1)
+## 1.64e-09
+
+
+## pnorm
+sum(Si_square2)/(sqrt(ttn_pai2g_sqr_montecarol) - ttn_pai2g_expect^2)
+
+
+=======
 ## 
 (mean(Si_square2) * sqrt(length(Si_square2))) /sqrt(ttn_pai2g_sqr_montecarol - ttn_pai2g_expect^2) 
 #36.385
@@ -136,3 +170,4 @@ chi_sqr2
 (1 - pchisq(15.3307, 1))/2
 ## 1.619448e-09
 ############################
+>>>>>>> 3cc210e227900e59e033e885798163f7d0d4bb95
