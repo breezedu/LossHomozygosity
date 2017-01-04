@@ -149,13 +149,15 @@ public class Step2_0104_MonteCarol_TTN_fit_CCDSHash {
 			
 			int position = Integer.parseInt( variants[index_pos] );
 			
+			
+			//the Cutoff of MAF is set to be below 1%
 			if( check_If_hits_Exons(position, exonList) ){
 				
 				//System.out.println(" One hit: " + position);
 				//check the 10% threshold:
 				double allel_freq = Double.parseDouble( variants[index_af]);
 				
-				if(allel_freq > 0 && allel_freq < 0.1){
+				if(allel_freq > 0 && allel_freq < 0.01){
 					
 					VariantsOnExons ++; 
 					alleleFreq_list.add( allel_freq );
@@ -239,7 +241,7 @@ public class Step2_0104_MonteCarol_TTN_fit_CCDSHash {
 			
 		} //end for 10 million loop;
 		
-		System.out.println("The sum over all Pai2g*Rho = " + sumPaiRho/circle);
+		System.out.println("\nThe sum over all Pai2g*Rho = " + sumPaiRho/circle);
 		
 		
 	}//end main()
@@ -277,6 +279,7 @@ public class Step2_0104_MonteCarol_TTN_fit_CCDSHash {
 	
 	
 	/*****************************************************************************************************************
+	 * Part IV
 	 * 
 	 * @param alleleFreq_list
 	 * @param seed 
@@ -305,16 +308,19 @@ public class Step2_0104_MonteCarol_TTN_fit_CCDSHash {
 			
 			
 			int hit = 0;
-			if(random1 < af)
+			if(random1 < af){
 				hit += 1;
+			}
 			
-			if(random2 < af)
+			if(random2 < af){
 				hit += 1;
+			}
 			
-			
+			//check hits
 			if(hit == 2){
 				
 				n2 ++; 
+				n1 += 2;
 				
 				rho = rho * af * af; 
 				
@@ -330,10 +336,13 @@ public class Step2_0104_MonteCarol_TTN_fit_CCDSHash {
 				
 			} //end if-else n1 and n2 conditions;
 			
-			System.out.println("randoms: " + random1 + "\t" + random2  + "\t af=" + af + ". n1=" + n1 + "\t n2=" + n2);
+		//	if(hit > 1)
+		//		System.out.println("randoms: " + random1 + "\t" + random2  + "\t af=" + af + ". n1=" + n1 + "\t n2=" + n2);
 			
 		}//end for loop; 
 		
+		if(n1 > 2)
+			System.out.println("seed=" + seed + "\t n1=" + n1 + "\t n2=" + n2);
 		
 		//calculate Pai2g based on n1 and n2 values
 		double Pai2g = 0;
@@ -354,7 +363,7 @@ public class Step2_0104_MonteCarol_TTN_fit_CCDSHash {
 		
 	//	System.out.println("The Pai2_g * Rho = " + Pai2g * Rhog); 
 	//	if(Pai2g > 0) 
-	//		System.out.print("n1=" + n1 +" n2=" + n2 + ", Pai2g: " + Pai2g);
+	//		System.out.print("n1=" + n1 +" n2=" + n2 + ", Pai2g: " + Pai2g + "\t\t; ");
 		
 		return rho * Pai2g ;
 	}
