@@ -34,45 +34,25 @@ import java.util.Scanner;
  * @author Jeff
  *
  */
-public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
+public class D1102_MonteCarol_TTN_fit_CCDSHash {
 	
 	
-	
-	static Step1_Extract_exonHash_from_CCDSHs373 CCDSHash = new Step1_Extract_exonHash_from_CCDSHs373();
-	
-	
-	
-	public static void main(String[] args) throws IOException{		
+	public static void main(String[] args) throws IOException{
 		
+		D0723_Extract_exonHash_from_CCDSHs373 CCDSHash = new D0723_Extract_exonHash_from_CCDSHs373();
 		
-		/**************************************************************************************************************/
-		/**************************************************************************************************************
-		 * Part I
-		 * 
-		 * Get an ArrayList of exons on TTN gene; 
-		 * the Step1_Extract_exonHash_fromCCDSHs373 object will return a HashMap, in which the key is Gene Name
-		 * the value is an ArrayList of exons;
-		 * 
-		 * Pass a string of gene name, "TTN" in this case to the method Part_I_getExonList_for_aGene().
-		 * Return an ArrayList<Exon_objects> of all Exons along the gene TTN; 
-		 */
-		
-		String gene_name = "TTN"; 
-		ArrayList<Exon_objects> exonList = Part_I_getExonList_for_aGenen( gene_name ); 
-		
-
+		//Initial a HashMap; //call run() method, to get all exons, and update the HashMap;
+		HashMap<String, ArrayList<Exon_objects>> exonHash = CCDSHash.run();
 		
 		
 		
-		/**************************************************************************************************************/		
-		/**************************************************************************************************************
-		 * 
-		 */
+		//create an arrayList to store all exon-objects;
+		ArrayList<Exon_objects> exonList = exonHash.get("TTN");
+				
+		System.out.println("There are " + exonList.size() + " exons in current gene: " + exonList.get(0).gene_name + ".. " + exonList.get(0).exon_name); 
+		
 		//2nd, read-in TTN exac variants of LoF from D:/PhD/TTN_pulled_from_ExAC/exac_TTN_LoF.CSV
-		String routine = "D:/PhD/ExAC_datasets/All_LOF/TTN.CSV";
-		
-		//on laptop, use the routine below
-		//routine = "D:/PhD/ExAC_genetable_subdatasets/TTN.CSV";
+		String routine = "D:/PhD/ExAC_genetable_subdatasets/TTN.CSV";
 		
 		Scanner variants_reader = new Scanner(new File( routine ));
 		/********
@@ -168,13 +148,6 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 		System.out.println("There are " + VariantsOnExons + " variants on exons.......");
 		
 		
-		
-		
-		/**************************************************************************************************************/
-		/**************************************************************************************************************
-		 * Part III
-		 * 
-		 */
 		//3rd, calculate the probability of homozygous:
 		double homo = 1;
 		double hit_one_gene = 1;
@@ -188,7 +161,7 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 		
 		homo = hit_one_gene * hit_one_gene;
 		
-		System.out.println("The observed Rho*Pai_2|g, probability of getting homozygos TTN gene: " + homo);
+		System.out.println("The observed Pai_2|g, probability of getting homozygos TTN gene: " + homo);
 		
 		/*****************************************************************************
 		 * The output of this java code:
@@ -212,17 +185,47 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 		outWriter.close();
 		
 		
-		/**************************************************************************************************************/
-		/**************************************************************************************************************
-		 * Part IV
-		 * 
-		 */
 		//4th, Monte Carol Integration
+		//get 10M simulations:
 		
-		//get 1M simulation of MC to check the return Pai_2g * Pai_2g
+		Double Pai_1M = simulate_10M_MonteCarols(alleleFreq_list, 1000000);
+		
+		//simulate another 10M*10 times:
+		Double sum_Pai_squre = Pai_1M;
+		System.out.println("\t \t The initial mean of Pai2_squre*1M is:" +  sum_Pai_squre );
+		for(int i=0; i<50; i++){
+			
+			Double curr_pai_squre = simulate_10M_MonteCarols(alleleFreq_list, 1000000);
+			sum_Pai_squre += curr_pai_squre;
+			
+			System.out.println("\tCurrent pai_squre*1M: " + curr_pai_squre + "\t the mean:" +  sum_Pai_squre / (i+2));
+		}
+		
+
+	//	System.out.println("The sum over all Pai2g^2*Rho => Expectation: " + sumPai/circle * sumPai/circle);
+		
+		
+	}//end main()
+
+	
+	/***********
+	 * call MonteCarol() method repeatly 10M times to simulate Pai2_g
+	 * the MonteCarol() method would return Pai2_g*Pai2_g
+	 * Here in this method, we return the average of Pai2_g*Pai2_g of 10M simulations
+	 * 
+	 * Pass an arrayList of allele-frequencies and an integer of circle to loop;
+	 * 
+	 * @param alleleFreq_list
+	 * @param circle 
+	 * @return
+	 */
+	private static Double simulate_10M_MonteCarols(ArrayList<Double> alleleFreq_list, int circle) {
+		// TODO Auto-generated method stub
 		
 		double sumPai = 0.0;
-		int circle = 1000000;
+		//int circle = 1000000;
+		
+	//	System.out.println("Will repreat " + circle + " circles.");
 		for(int i=0; i<circle; i++){
 			
 			double Pai2g2Rhgo = MonteCarol(alleleFreq_list);
@@ -235,38 +238,10 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 			
 		} //end for 10 million loop;
 		
-		System.out.println("The sum over all Pai2g^2 = " + sumPai/circle);
+	//	System.out.println("The sum over all Pai2g => Expectation: " + sumPai/circle);
 		
-		
-	}//end main()
-
-	
-	
-	
-	/**********************************************************************************************************
-	 * Part I
-	 * 
-	 * get an ArrayList of exons for a certain gene
-	 * 
-	 * @param gene_name
-	 * @return
-	 * @throws IOException
-	 */
-	private static ArrayList<Exon_objects> Part_I_getExonList_for_aGenen(String gene_name) throws IOException {
-		// TODO Auto-generated method stub
-		
-		//Initial a HashMap; //call run() method, to get all exons, and update the HashMap;
-		HashMap<String, ArrayList<Exon_objects>> exonHash = CCDSHash.run();
-		
-		
-		//create an arrayList to store all exon-objects;
-		ArrayList<Exon_objects> exonList = exonHash.get("TTN");
-				
-		System.out.println("There are " + exonList.size() + " exons in current gene: " + exonList.get(0).gene_name + ".. " + exonList.get(0).exon_name); 
-				
-		return exonList;
-		
-	} //end part_I_getExonList_for_aGene(); 
+		return sumPai;
+	}
 
 
 	private static double MonteCarol(ArrayList<Double> alleleFreq_list) {
@@ -295,7 +270,7 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 				hit += 1;
 			
 			if(hit == 2){
-				
+
 				n2 ++; 
 				
 			} else if ( hit == 1){
@@ -328,9 +303,9 @@ public class Step2_0103_MonteCarol_TTN_fit_CCDSHash {
 		
 	//	System.out.println("The Pai2_g * Rho = " + Pai2g * Rhog); 
 	//	if(Pai2g > 0) 
-	//		System.out.print("n1=" + n1 +" n2=" + n2 + ", Pai2g: " + Pai2g);
+	//		System.out.print("n1=" + n1 +" n2=" + n2 + ", Pai2g: " + Pai2g*Pai2g);
 		
-		return Pai2g * Pai2g ;
+		return Pai2g*Pai2g ;
 	}
 
 
