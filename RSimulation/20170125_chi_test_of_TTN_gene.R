@@ -102,12 +102,12 @@ ttn_pai2g_expect
 sum(Si_square2) / (var_fisher * length(Si_square2))
 chi_sqr2 <- sum(Si_square2)/(ttn_pai2g_sqr_montecarol - ttn_pai2g_times_rho^2) /length(Si_square2)
 chi_sqr2 
-## [1] 23.52902
+## [1] 24.26783
 
-1 - pchisq(23.529, 1)
+1 - pchisq(24.26783, 1)
 ## 1.230451e-06
 
-(1 - pchisq(23.529, 1))/2
+(1 - pchisq(24.26783, 1))/2
 ## 6.152254e-07
 ############################
 
