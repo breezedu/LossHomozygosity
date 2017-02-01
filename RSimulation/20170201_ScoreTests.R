@@ -30,7 +30,7 @@ summary(Si)
 n <- length(Si)
 
 ## simple score test: sct
-sct <- (sum(Si))^2 / (var(Si) * n) 
+sct <- ( sum(Si) )^2 / (var(Si) * n) 
 
 ## check sct
 sct
@@ -73,7 +73,7 @@ ttn_pai2g_expect
 sc_fisher <- (sum(Si_square2) / I_beta )/n
 
 sc_fisher
-
+# 24.26783
 
 
 1 - pchisq(sc_fisher, df = 1)
