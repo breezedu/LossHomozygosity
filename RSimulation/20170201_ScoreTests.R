@@ -30,18 +30,18 @@ summary(Si)
 n <- length(Si)
 
 ## simple score test: sct
-sct <- ( sum(Si) )^2 / (var(Si) * n) 
+st_simple <- ( sum(Si) )^2 / (var(Si) * n) 
 
 ## check sct
-sct
+st_simple
 
 
 ##[1] 25.96067
 
-1- pchisq(sct, df=1)
+1- pchisq(st_simple, df=1)
 ##[1] 3.485652e-07
 
-( 1 - pchisq(25.96, 1)) / 2
+( 1 - pchisq(25.96, df = 1)) / 2
 ##[1] 1.742826e-07
 
 
@@ -51,7 +51,7 @@ sct
 #######################################################################
 ## after applied fisher information 
 ## after applied Monte Carol integration
-##############################################
+#######################################################################
 
 
 ## alternatively
