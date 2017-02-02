@@ -37,6 +37,7 @@ st_simple <- ( sum(Si) )^2 / (var(Si) * n)
 ## check sct
 st_simple
 
+var(Si)
 
 ##[1] 25.96067
 
@@ -68,7 +69,7 @@ sum(Si_square2)
 I_beta <- ttn_pai2g_sqr_montecarol - ttn_pai2g_expect^2
 I_beta
 
-ttn_pai2g_expect
+Sittn_pai2g_expect
 
 
 ## score test with fisher information
