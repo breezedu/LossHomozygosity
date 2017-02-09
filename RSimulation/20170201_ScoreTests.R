@@ -85,3 +85,26 @@ sc_fisher
 (1 - pchisq(24.26783, 1))/2
 ## 4.1913e-07
 ############################
+
+
+
+###############################################
+## 
+## (sum(Si))^2 / (sum( I(beta) )
+
+Score <- sum(Si)^2
+Score
+
+I_beta <- TTN_pai2g_observed^2 - ttn_pai2g_expect^2
+
+sum(I_beta)
+
+var(Si)
+
+Score / sum(I_beta) 
+# [1] 25.73214
+
+
+
+sum(Si)^2 / (var(Si) * length(Si) )
+# [1] 25.96067
