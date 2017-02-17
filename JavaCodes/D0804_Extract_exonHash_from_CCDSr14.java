@@ -1,4 +1,4 @@
-package data_manipulation;
+package JavaCodes;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,7 +94,7 @@ public class D0804_Extract_exonHash_from_CCDSr14 {
 		String routine = "D:/PhD/CCDS_exon_frames/Hs37.3/";
 		String file_name = "CCDS.current.txt";
 		
-		routine = "D:/PhD/CCDS_exon_frames/r14/";
+		routine = "D:/PhD/CCDS_exon_frames/CCDS.r14/";
 		file_name = "CCDS.current_30Oct13_release14_PUBLIConly.txt";
 		
 		Scanner read_in = new Scanner(new File(routine + file_name));

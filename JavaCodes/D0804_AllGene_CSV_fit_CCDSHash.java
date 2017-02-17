@@ -1,4 +1,4 @@
-package data_manipulation;
+package JavaCodes;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -13,7 +13,7 @@ import java.util.Scanner;
  * 
  * Get the CSV document from ExAC website, only download the LoF variants; 
  * 
- * Filter these variants by CCDS_15 exon frames. 
+ * Filter these variants by CCDSr14 exon frames. 
  * 
  * Check how many qualify variants left, and calculate the probability of homozygous.
  * 
