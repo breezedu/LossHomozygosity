@@ -1,4 +1,4 @@
-package data_manipulation;
+package JavaCodes;
 
 import java.io.File;
 import java.io.IOException;
@@ -94,7 +94,8 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 		String routine = "D:/PhD/CCDS_exon_frames/Hs37.3/";
 		String file_name = "CCDS.current.txt";
 		
-		routine = "D:/PhD/CCDS_exon_frames/r14/";
+		//D:\PhD\CCDS_exon_frames\CCDS.r14
+		routine = "D:/PhD/CCDS_exon_frames/CCDS.r14/";
 		file_name = "CCDS.current_30Oct13_release14_PUBLIConly.txt";
 		
 		Scanner read_in = new Scanner(new File(routine + file_name));
@@ -145,7 +146,7 @@ public class D0723_Extract_exonHash_from_CCDSHs373 {
 			}
 			
 			//printout each gene's exon number;
-			//System.out.println("There are " + totalExons + " exons on gene " + geneName + ", based on different transcripts. ");
+			System.out.println("There are " + totalExons + " exons on gene " + geneName + ", based on different transcripts. ");
 			
 		}//end while loop;
 		
