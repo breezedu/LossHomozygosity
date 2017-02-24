@@ -15,6 +15,11 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 
 /**********************************************
+ * Our work focus on genes in ALS dataset
+ * 1st, we create two objects, getNames and pullData_exac
+ * 2nd, get all gene names from ALS dataset, put them into one array list
+ * 3rd, pull variants data from ExAC for each gene
+ * 
  * import selenium jars
  * download selenium-java-2.53.0.zip from 
  * 		http://www.seleniumhq.org/download/
