@@ -104,7 +104,9 @@ var(Si)
 Score / sum(I_beta) 
 # [1] 25.73214
 
+(1 - pchisq(25.73214, 1)) / 2
 
 
 sum(Si)^2 / (var(Si) * length(Si) )
 # [1] 25.96067
+(1 - pchisq(25.96067, 1)) / 2
