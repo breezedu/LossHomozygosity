@@ -42,6 +42,9 @@ summary(Si.simulated)
 ## the length of n
 n <- length(Si)
 
+
+##################################
+## simulated 
 n.simulate <- length(Si.simulated)
 
 
@@ -52,6 +55,9 @@ st_simple <- ( sum(Si) )^2 / (var(Si) * n)
 ## check sct
 st_simple
 
+
+##################################
+## simulated 
 st_simulated <- ( sum(Si.simulated))^2 / ( var(Si.simulated) * n.simulate)
 st_simulated
 
@@ -67,6 +73,9 @@ var(Si)
 ##[1] 1.742826e-07
 
 
+
+##################################
+## simulated 
 ( 1 - pchisq(0.4278, df = 1)) /2
 
 
