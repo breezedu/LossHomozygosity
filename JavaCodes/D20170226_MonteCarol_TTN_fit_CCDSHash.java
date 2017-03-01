@@ -41,9 +41,10 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 		
 		D20170224_Extract_exonHash_from_CCDSr14 CCDSHash = new D20170224_Extract_exonHash_from_CCDSr14();
 		
+		
+		/*******************************************************************************************/
 		//Initial a HashMap; //call run() method, to get all exons, and update the HashMap;
-		HashMap<String, ArrayList<Exon_objects>> exonHash = CCDSHash.run();
-				
+		HashMap<String, ArrayList<Exon_objects>> exonHash = CCDSHash.run();				
 		
 		//create an arrayList to store all exon-objects;
 		ArrayList<Exon_objects> exonList = exonHash.get("TTN");
@@ -109,7 +110,7 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 		
 		
 		//initial a buffer-writer to write all variants within exons;
-		File output = new File("D:/PhD/TTN_variants_OnExons.txt");
+		File output = new File("D:/PhD/QualifyTTN_variants_OnExons.txt");
 		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
 		
 		//write in the titleLine without any quotes.
@@ -191,22 +192,11 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 		
 		
 		/******************************************************************************************/
-		//4th, Monte Carol Integration
-		//get 10M simulations:
+		//4th, Monte Carol Integration to simulate the P(V=1 | X) = 1/( 1 + exp(alpha + beta * I_(x=2)) 
+		//get 10k simulations:
 		
-		Double Pai_1M = simulate_10M_MonteCarols(alleleFreq_list, 1000000);
-		
-		//simulate another 10M*10 times:
-		Double sum_Pai_squre = Pai_1M;
-		System.out.println("\t \t The initial mean of Pai2_squre*1M is:" +  sum_Pai_squre );
-		for(int i=0; i<50; i++){
-			
-			Double curr_pai_squre = simulate_10M_MonteCarols(alleleFreq_list, 1000000);
-			sum_Pai_squre += curr_pai_squre;
-			
-			System.out.println("\tCurrent pai_squre*1M: " + curr_pai_squre + "\t the mean:" +  sum_Pai_squre / (i+2));
-		}
-		
+		simulate_10K_MonteCarols(alleleFreq_list, 100000);
+					
 
 		//System.out.println("The sum over all Pai2g^2*Rho => Expectation: " + sumPai/circle * sumPai/circle);
 		
@@ -223,34 +213,41 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 	 * 
 	 * @param alleleFreq_list
 	 * @param circle 
+	 * @return 
 	 * @return
+	 * @throws IOException 
 	 */
-	private static Double simulate_10M_MonteCarols(ArrayList<Double> alleleFreq_list, int circle) {
+	private static void simulate_10K_MonteCarols(ArrayList<Double> alleleFreq_list, int circle) throws IOException {
 		// TODO Auto-generated method stub
+		File output = new File("D:/PhD/simulated_n2n1.txt");
+		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
 		
-		double sumPai = 0.0;
-		//int circle = 1000000;
+		//write the title line
+		outWriter.write("n1" + "\t" + "n2" + "\t" + "Pai2g\n");
 		
-	//	System.out.println("Will repreat " + circle + " circles.");
 		for(int i=0; i<circle; i++){
 			
-			double Pai2g2Rhgo = MonteCarol(alleleFreq_list);
+			String n1andn2 = MonteCarol(alleleFreq_list);
+			//System.out.println("n2+n1: " + n2andn1);
 			
-			if(Pai2g2Rhgo > 0){
-				
-			//	System.out.println("\t i=" + i + "\t Pai2g^2=" + Pai2g2Rhgo);
-				sumPai += Pai2g2Rhgo; 
-			}
+			//write n2 and n1 into a txt file; 
+			outWriter.write(n1andn2 + "\n"); 
 			
 		} //end for 10 million loop;
 		
-	//	System.out.println("The sum over all Pai2g => Expectation: " + sumPai/circle);
+		outWriter.close(); 
 		
-		return sumPai;
-	}
+	}//end simulate_10K_MonteCarols() method; 
 
 
-	private static double MonteCarol(ArrayList<Double> alleleFreq_list) {
+	/***********************************************************************
+	 * MonteCarol() will simulate one gene, based on a given arraylist of variants
+	 * each variant will follow Birnolli distribution, all variants would follow Binomial Dist
+	 * 
+	 * @param alleleFreq_list
+	 * @return
+	 */
+	private static String MonteCarol(ArrayList<Double> alleleFreq_list) {
 		// TODO Auto-generated method stub
 		
 		//4.1 get the arrayList of qualified allele frequencies alleleFreq_list
@@ -287,8 +284,17 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 				
 			} //end if-else n1 and n2 conditions;
 			
-		}//end for loop; 
+		}//end for loop; 		
 		
+		
+		//check viability 1/(1 + exp(alpha + beta*Ix))		
+		
+		//alpha + beta * I = 0 + 1*n2;
+		double power = 0 + 1*n2;
+		
+		double viability = 1.0/(1 + Math.pow(Math.E, power)); 
+		
+		double random = Math.random();
 		
 		//calculate Pai2g based on n1 and n2 values
 		double Pai2g = 0;
@@ -307,12 +313,18 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 			Pai2g = 1 - Math.pow(0.5, n1 -1);
 		}
 		
-	//	System.out.println("The Pai2_g * Rho = " + Pai2g * Rhog); 
-	//	if(Pai2g > 0) 
-	//		System.out.print("n1=" + n1 +" n2=" + n2 + ", Pai2g: " + Pai2g*Pai2g);
-		
-		return Pai2g*Pai2g ;
-	}
+		if(random < viability){
+			String ret = n1 + "\t" + n2 + "\t" + Pai2g;
+			return ret; 
+			
+		} else {
+			
+			System.out.println(random + " > " + viability + ", n1=" +n1 + " n2=" + n2 + " Not viable.");
+			return MonteCarol(alleleFreq_list); 
+			
+		}
+
+	}//end MonteCarol() method; 
 
 
 	/*******************
