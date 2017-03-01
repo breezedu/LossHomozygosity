@@ -49,7 +49,7 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 		//create an arrayList to store all exon-objects;
 		ArrayList<Exon_objects> exonList = exonHash.get("TTN");
 				
-		System.out.println("There are " + exonList.size() + " exons in current gene: " + exonList.get(0).gene_name + ".. " + exonList.get(0).exon_name); 
+	//	System.out.println("There are " + exonList.size() + " exons in current gene: " + exonList.get(0).gene_name + ".. " + exonList.get(0).exon_name); 
 
 		
 		
@@ -58,7 +58,7 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 		String routine = "D:/PhD/ExAC_genetable_subdatasets/TTN.CSV";
 		
 		Scanner variants_reader = new Scanner(new File( routine ));
-		/********
+		/********************************************************************************************
 		 * the first line:
 		 * "Chrom","Position","RSID","Reference","Alternate","Consequence","Protein Consequence","Transcript Consequence",
 		 * "Filter","Annotation","Flags","Allele Count","Allele Number","Number of Homozygotes","Allele Frequency",
@@ -97,7 +97,7 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 		}
 		
 		//printout the index of Position and Allele-Frequency;
-		System.out.println("For each line of data, the variant position index: " + index_pos + ", Allele-Frequency index: " + index_af +"\n");
+		//System.out.println("For each line of data, the variant position index: " + index_pos + ", Allele-Frequency index: " + index_af +"\n");
 		
 		
 		//initial VariantsOnExons to indicate the number of variants hit exons;
@@ -219,7 +219,8 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 	 */
 	private static void simulate_10K_MonteCarols(ArrayList<Double> alleleFreq_list, int circle) throws IOException {
 		// TODO Auto-generated method stub
-		File output = new File("D:/PhD/simulated_n2n1.txt");
+		
+		File output = new File("D:/PhD/PhD/simulated_n2n1beta07.txt");
 		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
 		
 		//write the title line
@@ -236,7 +237,7 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 		} //end for 10 million loop;
 		
 		outWriter.close(); 
-		
+		System.out.println("Simulation done, there are " + alleleFreq_list.size() + " variants on the gene.");
 	}//end simulate_10K_MonteCarols() method; 
 
 
@@ -265,37 +266,16 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 			double random1 = Math.random() ;
 			double random2 = Math.random() ;
 			
-			int hit = 0;
-			if(random1 <= af)
-				hit += 1;
-			
-			if(random2 <= af)
-				hit += 1;
-			
-			if(hit == 2){
-
-				n2 ++; 
+			if(random1 <= af && random2 <= af){
+				n2 ++;
 				
-			} else if ( hit == 1){
-				
-				n1 ++;	
-				
-			} else {
-				
-			} //end if-else n1 and n2 conditions;
-			
+			} else if( random1 <= af || random2 <= af){
+				n1 ++;
+			}
+						
 		}//end for loop; 		
 		
-		
-		//check viability 1/(1 + exp(alpha + beta*Ix))		
-		
-		//alpha + beta * I = 0 + 1*n2;
-		double power = 0 + 1*n2;
-		
-		double viability = 1.0/(1 + Math.pow(Math.E, power)); 
-		
-		double random = Math.random();
-		
+				
 		//calculate Pai2g based on n1 and n2 values
 		double Pai2g = 0;
 		
@@ -313,6 +293,17 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 			Pai2g = 1 - Math.pow(0.5, n1 -1);
 		}
 		
+		//check viability 1/(1 + exp(alpha + beta*Ix))				
+		//alpha + beta * I = 0 + 1*n2;
+		double alpha = 0;
+		double beta = 0.7;
+		
+		double power = alpha + beta*Pai2g;
+		
+		double viability = 1.0/(1 + Math.pow(Math.E, power)); 
+		
+		double random = Math.random();
+		
 		if(random < viability){
 			String ret = n1 + "\t" + n2 + "\t" + Pai2g;
 			return ret; 
@@ -327,7 +318,7 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 	}//end MonteCarol() method; 
 
 
-	/*******************
+	/***************************************************************************************
 	 * check if a variant hits any exon
 	 * @param position
 	 * @param exonList
@@ -375,7 +366,7 @@ public class D20170226_MonteCarol_TTN_fit_CCDSHash {
 	} //end of check_If_hits_Exons() method; 
 
 	
-	/******************
+	/***************************************************
 	 * remove all quotes within the string; 
 	 * @param str
 	 * @return

@@ -8,7 +8,7 @@
 ## there are 3047 individuals
 
 TTN_pai2g_observed <- read.table("D:/GitHub/LossHomozygosity/ALS_dataset/TTN_Pai2g_observed.txt", header = TRUE, sep = "\t")
-TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1.txt", header=  TRUE, sep = "\t")
+TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta08.txt", header=  TRUE, sep = "\t")
 
 
 
@@ -23,7 +23,8 @@ TTN_pai2g_simulated <- TTN_pai2g_simulated$Pai2g
 summary(TTN_pai2g_simulated)
 
 ## plot the homozygous variants
-## plot(TTN_pai2g_observed)
+plot(TTN_pai2g_observed)
+plot(TTN_pai2g_simulated)
 
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
@@ -76,7 +77,7 @@ var(Si)
 
 ##################################
 ## simulated 
-( 1 - pchisq(0.4278, df = 1)) /2
+( 1 - pchisq(1.0082, df = 1)) /2
 
 
 #######################################################################
