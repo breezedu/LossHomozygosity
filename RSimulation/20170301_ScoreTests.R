@@ -8,7 +8,7 @@
 ## there are 3047 individuals
 
 TTN_pai2g_observed <- read.table("D:/GitHub/LossHomozygosity/ALS_dataset/TTN_Pai2g_observed.txt", header = TRUE, sep = "\t")
-TTN_pai2g_simulated <- read.table("D:/PhD/simulated_n2n1.txt", header=  TRUE, sep = "\t")
+TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1.txt", header=  TRUE, sep = "\t")
 
 
 
@@ -37,14 +37,24 @@ ttn_pai2g_expect <- 1.977227008827069E-4
 Si <- TTN_pai2g_observed - ttn_pai2g_expect
 summary(Si)
 
+Si.simulated <- TTN_pai2g_simulated - ttn_pai2g_expect
+summary(Si.simulated)
 ## the length of n
 n <- length(Si)
+
+n.simulate <- length(Si.simulated)
+
+
 
 ## simple score test: sct
 st_simple <- ( sum(Si) )^2 / (var(Si) * n) 
 
 ## check sct
 st_simple
+
+st_simulated <- ( sum(Si.simulated))^2 / ( var(Si.simulated) * n.simulate)
+st_simulated
+
 
 var(Si)
 
@@ -57,7 +67,7 @@ var(Si)
 ##[1] 1.742826e-07
 
 
-
+( 1 - pchisq(0.4278, df = 1)) /2
 
 
 #######################################################################
