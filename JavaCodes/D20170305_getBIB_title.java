@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -116,7 +117,12 @@ public class D20170305_getBIB_title {
 				WebElement bib_button = driver.findElement(By.linkText("BibTeX"));
 				
 				bib_button.click(); 
-				Thread.sleep(2000); //give user time to copy the bib doc. 
+				Thread.sleep(5000); //give user time to copy the bib doc. 
+				
+				//copy the body txt:
+				driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "a");;
+				driver.findElement(By.cssSelector("body")).sendKeys(Keys.CONTROL + "c");
+				
 			} else {
 				
 				System.out.println("No bibTex link displayed."); 
