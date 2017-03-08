@@ -46,7 +46,7 @@ st_simple
 #################################################
 ## simulated TTN Pai2g
 
-TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta03088651.txt", header=  TRUE, sep = "\t")
+TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta030886511.txt", header=  TRUE, sep = "\t")
 
 ## simulated 
 TTN_pai2g_simulated <- TTN_pai2g_simulated$Pai2g
