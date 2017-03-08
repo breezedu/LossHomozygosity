@@ -46,7 +46,7 @@ st_simple
 #################################################
 ## simulated TTN Pai2g
 
-TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta030886511.txt", header=  TRUE, sep = "\t")
+TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta0308851511t.txt", header=  TRUE, sep = "\t")
 
 ## simulated 
 TTN_pai2g_simulated <- TTN_pai2g_simulated$Pai2g
@@ -54,7 +54,7 @@ summary(TTN_pai2g_simulated)
 
 plot(TTN_pai2g_simulated)
 
-Si.simulated <- TTN_pai2g_simulated - ttn_pai2g_expect
+Si.simulated <- TTN_pai2g_simulated - ttn_pai2g_expect 
 summary(Si.simulated)
 ## the length of n = 10000
 n.simulate <- length(Si.simulated)
