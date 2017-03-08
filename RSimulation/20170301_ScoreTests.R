@@ -8,8 +8,6 @@
 ## there are 3047 individuals
 
 TTN_pai2g_observed <- read.table("D:/GitHub/LossHomozygosity/ALS_dataset/TTN_Pai2g_observed.txt", header = TRUE, sep = "\t")
-TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta08.txt", header=  TRUE, sep = "\t")
-
 
 
 ## extract only $TTN row
@@ -17,14 +15,9 @@ TTN_pai2g_observed <- TTN_pai2g_observed$TTN
 summary(TTN_pai2g_observed)
 
 
-###########################################
-## simulated 
-TTN_pai2g_simulated <- TTN_pai2g_simulated$Pai2g
-summary(TTN_pai2g_simulated)
-
 ## plot the homozygous variants
 plot(TTN_pai2g_observed)
-plot(TTN_pai2g_simulated)
+
 
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
@@ -38,10 +31,7 @@ ttn_pai2g_expect <- 1.977227008827069E-4
 Si <- TTN_pai2g_observed - ttn_pai2g_expect
 summary(Si)
 
-Si.simulated <- TTN_pai2g_simulated - ttn_pai2g_expect
-summary(Si.simulated)
-## the length of n
-n <- length(Si)
+
 
 
 ##################################
@@ -52,9 +42,26 @@ n.simulate <- length(Si.simulated)
 
 ## simple score test: sct
 st_simple <- ( sum(Si) )^2 / (var(Si) * n) 
-
+( sum(Si))^2
 ## check sct
 st_simple
+
+
+#################################################
+## simulated TTN Pai2g
+
+TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta03088550.txt", header=  TRUE, sep = "\t")
+
+## simulated 
+TTN_pai2g_simulated <- TTN_pai2g_simulated$Pai2g
+summary(TTN_pai2g_simulated)
+
+plot(TTN_pai2g_simulated)
+
+Si.simulated <- TTN_pai2g_simulated - ttn_pai2g_expect
+summary(Si.simulated)
+## the length of n = 10000
+n <- length(Si)
 
 
 ##################################
@@ -70,8 +77,10 @@ var(Si)
 1- pchisq(st_simple, df=1)
 ##[1] 3.485652e-07
 
-( 1 - pchisq(25.96, df = 1)) / 2
+( 1 - pchisq(st_simple, df = 1)) / 2
 ##[1] 1.742826e-07
+
+(1 - pchisq(st_simulated, df = 1)) /2
 
 
 
