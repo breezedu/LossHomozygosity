@@ -34,10 +34,6 @@ summary(Si)
 
 
 
-##################################
-## simulated 
-n.simulate <- length(Si.simulated)
-
 
 
 ## simple score test: sct
@@ -50,7 +46,7 @@ st_simple
 #################################################
 ## simulated TTN Pai2g
 
-TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta03088550.txt", header=  TRUE, sep = "\t")
+TTN_pai2g_simulated <- read.table("D:/PhD/PhD/simulated_n2n1beta03088651.txt", header=  TRUE, sep = "\t")
 
 ## simulated 
 TTN_pai2g_simulated <- TTN_pai2g_simulated$Pai2g
@@ -61,8 +57,8 @@ plot(TTN_pai2g_simulated)
 Si.simulated <- TTN_pai2g_simulated - ttn_pai2g_expect
 summary(Si.simulated)
 ## the length of n = 10000
-n <- length(Si)
-
+n.simulate <- length(Si.simulated)
+n.simulate
 
 ##################################
 ## simulated 
