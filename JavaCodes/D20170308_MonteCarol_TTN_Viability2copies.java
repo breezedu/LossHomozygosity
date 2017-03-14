@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 /***************************
  * 
@@ -198,9 +199,21 @@ public class D20170308_MonteCarol_TTN_Viability2copies {
 		
 		Random generator = new Random(1234);
 		int size = 500000; 
-		for(int circle = 0; circle <1000; circle++){
-			simulate_10K_MonteCarols(alleleFreq_list, generator, size, circle);
-		}
+		
+		
+		//try parallel for each circle. 
+		IntStream.range(100,1000).parallel().forEach(circle->{
+	         try {
+				simulate_10K_MonteCarols(alleleFreq_list, generator, size, circle);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		});
+		
+		//for(int circle = 0; circle <1000; circle++){
+		//	simulate_10K_MonteCarols(alleleFreq_list, generator, size, circle);
+		//}
 
 					
 
