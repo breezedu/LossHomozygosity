@@ -62,17 +62,23 @@ CalScore <- function(circle){
   n.sim <- length(Si.sim)
   
   Score.sim <- ( sum(Si.sim))^2 / (n.sim * var(Si.sim))
-  print(Score.sim)
+  # print(Score.sim)
   
   p.value <- (1 - pchisq(Score.sim, df=1)) / 2
   print( c(Score.sim, p.value) )
+  
+  return(c(Score.sim, p.value))
 }
 
+retC <- NULL
 
 for(i in 0:9){
-  CalScore(i)
+  retC <- c(retC, CalScore(i))
 }
-  
+
+print(retC)
+
+
 CalScore(1)
   
   
