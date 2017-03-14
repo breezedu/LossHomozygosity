@@ -65,7 +65,7 @@ CalScore <- function(circle){
   # print(Score.sim)
   
   p.value <- (1 - pchisq(Score.sim, df=1)) / 2
-  print( c(Score.sim, p.value) )
+  print( c('Score: ', Score.sim, ' P-value: ', p.value) )
   
   return(c(Score.sim, p.value))
 }
