@@ -195,8 +195,13 @@ public class D20170308_MonteCarol_TTN_Viability2copies {
 		/******************************************************************************************/
 		//4th, Monte Carol Integration to simulate the P(V=1 | X) = 1/( 1 + exp(alpha + beta * I_(x=2)) 
 		//get 10k simulations, output simulated n1, n2, and pai2_g into a txt document. 
+		
 		Random generator = new Random(1234);
-		simulate_10K_MonteCarols(alleleFreq_list, generator, 1000000);
+		int size = 500000; 
+		for(int circle = 0; circle <1000; circle++){
+			simulate_10K_MonteCarols(alleleFreq_list, generator, size, circle);
+		}
+
 					
 
 		//System.out.println("The sum over all Pai2g^2*Rho => Expectation: " + sumPai/circle * sumPai/circle);
@@ -215,25 +220,28 @@ public class D20170308_MonteCarol_TTN_Viability2copies {
 	 * @param alleleFreq_list
 	 * @param generator 
 	 * @param circle 
+	 * @param circle2 
 	 * @return 
 	 * @return
 	 * @throws IOException 
 	 */
-	private static void simulate_10K_MonteCarols(ArrayList<Double> alleleFreq_list, Random generator, int circle) throws IOException {
+	private static void simulate_10K_MonteCarols(ArrayList<Double> alleleFreq_list, Random generator, int size, int circle) throws IOException {
 		// TODO Auto-generated method stub
+		System.out.println(); 
 		double via1 = 0.851;
 		double via2 = 0.511; 
 		double alpha = Math.log(1 - via1); 
 		double beta =  Math.log( (1.0 - via2)/via2 ) - alpha; 
 		
 		
-		File output = new File("D:/PhD/PhD/simulated_n2n1beta0308851511t3.txt");
+		File output = new File("D:/PhD/PhD/simulated_n2n1_" + circle + ".txt");
 		BufferedWriter outWriter = new BufferedWriter(new FileWriter(output));
 		
 		//write the title line
 		outWriter.write("n1" + "\t" + "n2" + "\t" + "Pai2g\n");
 		
-		for(int i=0; i<circle; i++){
+		//here size denotes sample size
+		for(int i=0; i<size; i++){
 			
 			String n1andn2 = MonteCarol(alleleFreq_list, generator, alpha, beta);
 			//System.out.println("n2+n1: " + n2andn1);
@@ -244,8 +252,8 @@ public class D20170308_MonteCarol_TTN_Viability2copies {
 		} //end for 10 million loop;
 		
 		outWriter.close(); 
-		System.out.println("Viability #1= " + via1 + " via#2=" + via2 + " a=" + alpha + " b=" + beta + "\n"); 
-		System.out.println("Simulation done, there are " + alleleFreq_list.size() + " variants on the gene.");
+		System.out.println("Viability #1= " + via1 + " via#2=" + via2 + " a=" + alpha + " b=" + beta); 
+		System.out.println("Simulation # " + circle + " done, there are " + alleleFreq_list.size() + " variants on the gene.");
 	}//end simulate_10K_MonteCarols() method; 
 
 
