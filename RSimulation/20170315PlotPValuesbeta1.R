@@ -1,86 +1,13 @@
-
-
 #################################################
-## simulated TTN Pai2g
-CalScore <- function(circle){
-  
-  ## 50k groups
-  ## routine <- paste("D:/PhD/PhD/50kSampleSize/simulated_n2n1_", circle, ".txt", sep = "")
-  
-  ## 10k groups
-  routine <- paste("D:/PhD/PhD/simulated_n2n1_", circle, ".txt", sep = "")
-  
-  TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
-  TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
-  
-  # summary(TTN_pai2g_sim)
-  
-  ttn_pai2g_exp <- 1.977227008827069E-4
-  
-  Si.sim <- TTN_pai2g_sim - ttn_pai2g_exp
-  
-  n.sim <- length(Si.sim)
-  
-  Score.sim <- ( sum(Si.sim))^2 / (n.sim * var(Si.sim))
-  # print(Score.sim)
-  
-  p.value <- (1 - pchisq(Score.sim, df=1)) / 2
-  
-  print( c('Score: ', Score.sim, ' P-value: ', p.value) )
-  
-  return( p.value ) 
-}
-
-retC <- NULL
-
-for(i in 0:199){
-  j = i*5
-  retC <- c(retC, CalScore(j), CalScore(j+1), CalScore(j+2), CalScore(j+3), CalScore(j+4))
-}
-density(retC)
-plot(density(retC), main = 'Plot 51 groups P-Values')
-
-retC <- NULL
-
-for(i in 125:207){
-  
-  
-  retC <- c(retC, CalScore(i))
-}
-
-density(retC)
-plot(density(retC), main = 'Plot 227 groups P-Values')
-
-
-for(i in 301:700){
-  retC <- c(retC, CalScore(i))
-}
-
-for( i in 701:999){
-  retC <- c(retC, CalScore(i))
-}
-
-density(retC)
-
-PValues <- retC 
-
-plot(density(PValues),
-     main = "Plot P-values from simulated genotypes")
-
-
-
-###################################################################
-
-
-#################################################
+##
 ## simulated TTN Pai2g through Rao's Score Test
 RaosScore <- function(circle){
   
   ## 50k groups
- ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
+  ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
   
   ## 10k groups
-   routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
+  routine <- paste("D:/PhD/PhD/10kbeta1/simulated_n2n1_", circle, ".txt", sep = "")
   
   TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
   TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
@@ -116,7 +43,7 @@ PValues.rao <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
 
-for(i in 0:1999){
+for(i in 1000:1999){
   
   PValues.rao <- c(PValues.rao, RaosScore(i))
 }
@@ -127,7 +54,7 @@ density(PValues.rao)
 ## plot P-values from Rao's Score Test
 plot(density(PValues.rao), main = 'Plot 2000 Samples P-Values when beta=0')
 
-hist(PValues.rao, breaks = 10)
+hist(PValues.rao, breaks = 20)
 
 mean( PValues.rao < 0.05)
 
