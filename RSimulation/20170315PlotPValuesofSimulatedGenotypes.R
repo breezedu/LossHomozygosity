@@ -33,8 +33,9 @@ CalScore <- function(circle){
 
 retC <- NULL
 
-for(i in 0:999){
-  retC <- c(retC, CalScore(i))
+for(i in 0:199){
+  j = i*5
+  retC <- c(retC, CalScore(j), CalScore(j+1), CalScore(j+2), CalScore(j+3), CalScore(j+4))
 }
 density(retC)
 plot(density(retC), main = 'Plot 51 groups P-Values')
@@ -76,10 +77,10 @@ plot(density(PValues),
 RaosScore <- function(circle){
   
   ## 50k groups
-  routine <- paste("D:/PhD/PhD/50kSampleSize/simulated_n2n1_", circle, ".txt", sep = "")
+  ##routine <- paste("D:/PhD/PhD/50kSampleSize/simulated_n2n1_", circle, ".txt", sep = "")
   
   ## 10k groups
-  ## routine <- paste("D:/PhD/PhD/simulated_n2n1_", circle, ".txt", sep = "")
+  routine <- paste("D:/PhD/PhD/10kSampleSize/simulated_n2n1_", circle, ".txt", sep = "")
   
   TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
   TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
@@ -110,16 +111,48 @@ RaosScore <- function(circle){
 ########################
 
 ## calculate P-Values for 226 groups of simulated genotypes with 50K individuals in each group.
-for(i in 0:225){
+## initial PValues.rao as a null vector
+PValues.rao <- NULL
+
+## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
+
+for(i in 0:200){
   
-  
-  retC <- c(retC, RaosScore(i))
+  PValues.rao <- c(PValues.rao, RaosScore(i))
 }
 
-density(retC)
-plot(density(retC), main = 'Plot 227 groups P-Values')
+## density of p-values from Rao's Score Test
+density(PValues.rao) 
+
+## plot P-values from Rao's Score Test
+plot(density(PValues.rao), main = 'Plot 20 groups P-Values')
 
 
+PValues.rao <- NULL
+for(i in 0:999){
+  
+  PValues.rao <- c(PValues.rao, RaosScore(i))
+}
+
+## density of p-values from Rao's Score Test
+density(PValues.rao) 
+
+## plot P-values from Rao's Score Test
+plot(density(PValues.rao), main = 'Plot 1000 groups P-Values, sample size 10k')
+
+
+for(i in 101:229){
+  
+  PValues.rao <- c(PValues.rao, RaosScore(i))
+}
+
+## density of p-values from Rao's Score Test
+density(PValues.rao) 
+
+## plot P-values from Rao's Score Test
+plot(density(PValues.rao), main = 'Plot 229 groups P-Values')
+
+summary(PValues.rao)
 
 
 ##################################################################
