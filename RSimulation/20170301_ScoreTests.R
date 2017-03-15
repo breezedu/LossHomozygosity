@@ -22,7 +22,7 @@ plot(TTN_pai2g_observed)
 ## the \Pai_2|g of ttn gene is 3.6328594930717866E-5
 ## got it from D0606_TTN_CSV_fit_CCDS15Frame.java code
 ## this is the expected probability of homozygity rate for ttn gene
-ttn_pai2g_expect <- 1.977227008827069E-4
+ttn_pai2g_expect <- 1.977227008827069E-4   ## when there are 414 LoF and 136 Missense variants;
 
 ttn_pai2g_expect <- 3.6328594930727866E-5   ## when there are only 414 SNPs on the gene;
 
