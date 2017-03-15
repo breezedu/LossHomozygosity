@@ -4,7 +4,12 @@
 ## simulated TTN Pai2g
 CalScore <- function(circle){
   
-  routine <- paste("D:/PhD/PhD/simulated_n2n1_", circle, ".txt", sep = "")
+  ## 50k groups
+  routine <- paste("D:/PhD/PhD/50kSampleSize/simulated_n2n1_", circle, ".txt", sep = "")
+  
+  ## 10k groups
+  routine <- paste("D:/PhD/PhD/10kSampleSize/simulated_n2n1_", circle, ".txt", sep = "")
+  
   TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
   TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
   
@@ -28,7 +33,7 @@ CalScore <- function(circle){
 
 retC <- NULL
 
-for(i in 0:300){
+for(i in 0:226){
   retC <- c(retC, CalScore(i))
 }
 
