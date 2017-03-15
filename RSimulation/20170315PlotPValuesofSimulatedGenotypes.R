@@ -33,7 +33,7 @@ CalScore <- function(circle){
 
 retC <- NULL
 
-for(i in 0:50){
+for(i in 0:999){
   retC <- c(retC, CalScore(i))
 }
 density(retC)
