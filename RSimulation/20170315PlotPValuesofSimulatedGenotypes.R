@@ -109,17 +109,7 @@ RaosScore <- function(circle){
 }
 ########################
 
-retC <- NULL
-
-for(i in 125:200){
-  retC <- c(retC, RaosScore(i))
-}
-
-density(retC)
-plot(density(retC), main = 'Plot 51 groups P-Values')
-
-retC <- NULL
-
+## calculate P-Values for 226 groups of simulated genotypes with 50K individuals in each group.
 for(i in 0:225){
   
   
