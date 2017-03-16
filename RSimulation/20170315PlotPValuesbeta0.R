@@ -1,7 +1,7 @@
 #################################################
 ##
 ## simulated TTN Pai2g through Rao's Score Test
-RaosScore <- function(circle){
+RaosScoreBeta0 <- function(circle){
   
   ## 50k groups
   ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
@@ -26,7 +26,7 @@ RaosScore <- function(circle){
   Score.sim <- ( sum(Si.sim))^2 / (sum(I_beta) )
   
   ## Calculate p-values 
-  p.value <- (1 - pchisq(Score.sim, df=1)) /2
+  p.value <- (1 - pchisq(Score.sim, df=1)) 
   
   print( c('Score: ', Score.sim, ' P-value: ', p.value) )
   return( p.value ) 
@@ -35,30 +35,36 @@ RaosScore <- function(circle){
 
 ## calculate P-Values for 226 groups of simulated genotypes with 50K individuals in each group.
 ## initial PValues.rao as a null vector
-PValues.rao <- NULL
+PValues.rao.b0 <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
 
-for(i in 0:99){
+for(i in 0:299){
   
-  PValues.rao <- c(PValues.rao, RaosScore(i))
+  PValues.rao.b0 <- c(PValues.rao.b0, RaosScoreBeta0(i))
 }
 
 ## density of p-values from Rao's Score Test
 density(PValues.rao) 
 
 ## plot P-values from Rao's Score Test
-plot(density(PValues.rao), main = 'Plot 2000 Samples P-Values when beta=0')
+plot(density(PValues.rao.b0), main = 'Plot 2000 Samples P-Values when beta=0')
 
-hist(PValues.rao, main = 'Histogram of PValues', xlim = c(0,1))
+hist(PValues.rao.b0, 
+     breaks = 20,
+     main = 'Histogram of PValues under Beta=0', 
+     xlim = c(0,1),
+     col = "blue",
+     xlab = "P-vlues, simple size = 300",
+     ylab = "Density")
 
-mean( PValues.rao < 0.05)
+mean( PValues.rao.b0 < 0.05)
 
-mean( PValues.rao < 0.25)
+mean( PValues.rao.b0 < 0.025)
 
-summary(PValues.rao)
+summary(PValues.rao.b0)
 
-hist(PValues.rao, 
+hist(PValues.rao.b0, 
      breaks=seq(0,1,l=20),
      freq=FALSE,
      col="blue",
@@ -69,8 +75,13 @@ hist(PValues.rao,
      xaxs="i")
 
 
-sum(PValues.rao < 0.05)
-sum(PValues.rao < 0.10)
+sum(PValues.rao.b0 < 0.05)
+sum(PValues.rao.b0 < 0.025)
+
+
+
+
+
 PValues.rao <- NULL
 for(i in 0:998){
   
