@@ -3,22 +3,27 @@
 ## simulated TTN Pai2g through Rao's Score Test
 RaosScore <- function(circle){
   
+  ## 50k groups
+  ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
+  
   ## 10k groups
-  routine <- paste("D:/PhD/PhD/10kSampleSize/simulated_n2n1_", circle, ".txt", sep = "")
+  routine <- paste("D:/PhD/PhD/10kbeta0/simulated_n2n1_", circle, ".txt", sep = "")
   
   TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
   TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
   
   # summary(TTN_pai2g_sim)
+  
   ttn_pai2g_exp <- 1.977227008827069E-4
   
   Si.sim <- TTN_pai2g_sim - ttn_pai2g_exp
+  
   n.sim <- length(Si.sim)
   
+  ## Score.sim = ( sum(Si.sim))^2 / ( n.sim * var(Si.sim) )
   I_beta <- TTN_pai2g_sim^2 - ttn_pai2g_exp^2
   
   Score.sim <- ( sum(Si.sim))^2 / (sum(I_beta) )
-  # print(Score.sim)
   
   ## Calculate p-values 
   p.value <- (1 - pchisq(Score.sim, df=1)) /2
@@ -34,7 +39,7 @@ PValues.rao <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
 
-for(i in 0:999){
+for(i in 0:99){
   
   PValues.rao <- c(PValues.rao, RaosScore(i))
 }
@@ -45,7 +50,7 @@ density(PValues.rao)
 ## plot P-values from Rao's Score Test
 plot(density(PValues.rao), main = 'Plot 2000 Samples P-Values when beta=0')
 
-hist(PValues.rao)
+hist(PValues.rao, main = 'Histogram of PValues', xlim = c(0,1))
 
 mean( PValues.rao < 0.05)
 
