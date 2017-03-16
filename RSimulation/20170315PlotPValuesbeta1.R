@@ -1,7 +1,7 @@
 #################################################
 ##
 ## simulated TTN Pai2g through Rao's Score Test
-RaosScore <- function(circle){
+RaosScoreBeta1 <- function(circle){
   
   ## 10k groups
   routine <- paste("D:/PhD/PhD/10kbeta1//simulated_n2n1_", circle, ".txt", sep = "")
@@ -34,11 +34,31 @@ RaosScore <- function(circle){
 PValues.rao.b1 <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
+start <- 300
+end <- 311
 
-for(i in 0:99){
+for(i in start:end){
   
-  PValues.rao.b1 <- c(PValues.rao.b1, RaosScore(i))
+  PValues.rao.b1 <- c(PValues.rao.b1, RaosScoreBeta1(i))
 }
+
+opr <- par(lwd=3)
+hist(PValues.rao.b1, breaks = 20 )
+
+
+##
+ttnpai2g_temp1 <- read.table("D:/PhD/PhD/10kSampleSize//simulated_n2n1")
+##
+
+hist(PValues.rao.b1, 
+     lwd=2,
+     breaks = 20,
+     main = 'Histogram of PValues under Beta=0', 
+     xlim = c(0,1),
+     col = "blue",
+     xlab = paste("P-vlues, simple size = ", length(PValues.rao.b1)),
+     ylab = "Density")
+par(opr)
 
 hist(PValues.rao.b1)
 
