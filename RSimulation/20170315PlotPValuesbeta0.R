@@ -39,10 +39,11 @@ PValues.rao.b0 <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
 
-for(i in 0:299){
+for(i in 0:1199){
   
   PValues.rao.b0 <- c(PValues.rao.b0, RaosScoreBeta0(i))
 }
+
 
 ## density of p-values from Rao's Score Test
 density(PValues.rao) 
@@ -50,13 +51,19 @@ density(PValues.rao)
 ## plot P-values from Rao's Score Test
 plot(density(PValues.rao.b0), main = 'Plot 2000 Samples P-Values when beta=0')
 
+opr <- par(lwd=3)
+hist(PValues.rao.b0, breaks = 20, )
+
+
 hist(PValues.rao.b0, 
+     lwd=2,
      breaks = 20,
      main = 'Histogram of PValues under Beta=0', 
      xlim = c(0,1),
      col = "blue",
-     xlab = "P-vlues, simple size = 300",
+     xlab = paste("P-vlues,", length(PValues.rao.b0), " samples"),
      ylab = "Density")
+par(opr)
 
 mean( PValues.rao.b0 < 0.05)
 
@@ -79,8 +86,17 @@ sum(PValues.rao.b0 < 0.05)
 sum(PValues.rao.b0 < 0.025)
 
 
+qqnorm(PValues.rao.b0,
+       main = "qqnorm plot")
+qqline(PValues.rao.b0, col="blue")
 
+install.packages('car')
+library(car)
 
+qqPlot(PValues.rao.b0, distribution="unif",
+       main = "qqPlot of uniform distribution")
+
+qqplot(PValues.rao.b0)
 
 PValues.rao <- NULL
 for(i in 0:998){
@@ -158,3 +174,46 @@ plot(P.values)
 
 density(retC)
 plot(density(retC), main = 'Plot 227 groups P-Values')
+
+
+#######################################################
+## return variances
+## simulated TTN Pai2g through Rao's Score Test
+VarianceBeta0 <- function(circle){
+  
+  ## 50k groups
+  ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
+  
+  ## 10k groups
+  routine <- paste("D:/PhD/PhD/10kbeta0/simulated_n2n1_", circle, ".txt", sep = "")
+  
+  TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
+  TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
+  
+  # summary(TTN_pai2g_sim)
+  
+  ttn_pai2g_exp <- 1.977227008827069E-4
+  
+  Si.sim <- TTN_pai2g_sim - ttn_pai2g_exp
+  
+  Si.var <- var(Si.sim)
+  
+  return( Si.var ) 
+}
+########################
+
+## calculate P-Values for 226 groups of simulated genotypes with 50K individuals in each group.
+## initial PValues.rao as a null vector
+var.rao.b0 <- NULL
+
+## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
+
+for(i in 0:1199){
+  
+  var.rao.b0 <- c(var.rao.b0, VarianceBeta0(i))
+}
+
+mean(var.rao.b0)
+
+length(var.rao.b0)
+
