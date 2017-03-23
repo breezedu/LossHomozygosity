@@ -15,6 +15,7 @@ RaosScoreBeta0 <- function(circle){
   # summary(TTN_pai2g_sim)
   
   ttn_pai2g_exp <- 1.977227008827069E-4
+  ttn_pai2g_exp <- 1.827227008827069E-4  
   
   Si.sim <- TTN_pai2g_sim - ttn_pai2g_exp
   
@@ -44,16 +45,17 @@ for(i in 0:1199){
   PValues.rao.b0 <- c(PValues.rao.b0, RaosScoreBeta0(i))
 }
 
+hist(PValues.rao.b0, breaks = 40 )
+
+
 
 ## density of p-values from Rao's Score Test
-density(PValues.rao) 
+density(PValues.rao.b0) 
 
 ## plot P-values from Rao's Score Test
 plot(density(PValues.rao.b0), main = 'Plot 2000 Samples P-Values when beta=0')
 
 opr <- par(lwd=3)
-hist(PValues.rao.b0, breaks = 20, )
-
 
 hist(PValues.rao.b0, 
      lwd=2,

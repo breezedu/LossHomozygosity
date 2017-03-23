@@ -34,9 +34,9 @@ Si <- TTN_pai2g_observed - ttn_pai2g_expect
 summary(Si)
 
 
+var(Si)
 
-
-
+var(Si) * length(Si)
 
 ## simple score test: sct
 st_simple <- ( sum(Si) )^2 / (var(Si) * n) 
