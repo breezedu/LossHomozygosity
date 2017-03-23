@@ -17,7 +17,7 @@ RaosScoreBeta0 <- function(circle){
   ttn_pai2g_exp <- 1.977227008827069E-4
   
   ## Try another pai2g_expected
-  ttn_pai2g_exp <- 1.827227008827069E-4  
+  ttn_pai2g_exp <- 1.777227008827069E-4  
   
   Si.sim <- TTN_pai2g_sim - ttn_pai2g_exp
   
