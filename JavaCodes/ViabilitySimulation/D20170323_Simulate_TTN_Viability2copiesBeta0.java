@@ -195,10 +195,10 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		//get 10k simulations, output simulated n1, n2, and pai2_g into a txt document. 
 		
 		Random generator = new Random(1234);
-		int size = 67000; 
+		int size = 100001; 
 		
 		//since there are only 4 cores in my desktop, so I have to limit the use of cores to be 3, otherwise the cpu occupation would be 100%
-		for(int i=0; i<1000; i+=3){
+		for(int i=1002; i<3000; i+=3){
 			
 			//every time, only pass 3 parallel jobs to the IntStream() method;
 			//in this way, I can physically, control the usage of CPUs to be less than 100%. 
@@ -273,7 +273,7 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		double[] alleles_record = new double[alleleFreq_list.size()];
 		
 		System.out.println(); 
-		double via1 = 0.881;
+		double via1 = 0.851;
 		double via2 = 0.511; 
 		double alpha = Math.log(1/via1 - 1); 
 		double beta =  0; //Math.log( (1.0 - via2)/via2 ) - alpha; 
@@ -335,7 +335,6 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 	 * @return
 	 */
 	private static String MonteCarol(ArrayList<Double> alleleFreq_list, Random generator, double alpha, double beta, double[] alleles_record) {
-		// TODO Auto-generated method stub
 		
 		// create new array from old array; 
 		// when the viability for current simulated phenotype is negative, we have to delete the allele counts we simulated. 
@@ -370,6 +369,7 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 				alleles_temp[i] ++;
 				
 				copy1.add(1);
+				
 			} else {
 				
 				copy1.add(0); 
@@ -434,8 +434,8 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		if(random < viability){
 			String ret = n1 + "\t" + n2 + "\t" + Pai2g;
 			
-			//assign the current alleles_temp back to alleles_record;
-			for(int j=0; j<alleles_temp.length;j++){
+			//add the current alleles_temp to alleles_record;
+			for(int j=0; j<alleles_temp.length; j++){
 				
 				alleles_record[j] += alleles_temp[j]; 
 			}

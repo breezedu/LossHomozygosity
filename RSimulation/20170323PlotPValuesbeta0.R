@@ -49,7 +49,7 @@ PValues.rao.b0 <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
 
-for(i in 0:428){
+for(i in 0:629){
   
   PValues.rao.b0 <- c(PValues.rao.b0, RaosScoreBeta0(i))
 }
@@ -141,7 +141,7 @@ CheckPai2gRho <- function(circle){
 
 pai2g.sim <- NULL
 
-for(i in 0:365){
+for(i in 0:479){
   
   pai2g.sim <- c(pai2g.sim, CheckPai2gRho(i))
 }
