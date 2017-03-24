@@ -14,13 +14,16 @@ RaosScoreBeta0 <- function(circle){
   
   # summary(TTN_pai2g_sim)
   
-  ttn_pai2g_exp <- 1.977227008827069E-4
+  ## the Pai2gRho for LoF + missence variants
+  #ttn_pai2g_exp <- 1.977227008827069E-4
   
-  ## Try another pai2g_expected
-  ttn_pai2g_exp <- 1.777227008827069E-4  
+  ## the Pai2gRho for LoF variants pai2g_expected
+  ttn_pai2g_exp <- 3.6328594930727866E-5  
   
-  ttn_pai2g_exp <- TTN_pai2g_sim[100001]
-  TTN_pai2g_sim <- TTN_pai2g_sim[1:100000]
+  len <- length(TTN_pai2g_sim)
+  
+  ttn_pai2g_exp <- TTN_pai2g_sim[len]
+  TTN_pai2g_sim <- TTN_pai2g_sim[1:len-1]
   
   
   Si.sim <- TTN_pai2g_sim - ttn_pai2g_exp
@@ -35,7 +38,7 @@ RaosScoreBeta0 <- function(circle){
   ## Calculate p-values 
   p.value <- (1 - pchisq(Score.sim, df=1)) 
   
-  print( c('Score: ', Score.sim, ' P-value: ', p.value) )
+  print( c('Score: ', Score.sim, ' P-value: ', p.value, ' Pai2gRho: ', ttn_pai2g_exp) )
   return( p.value ) 
 }
 ########################
@@ -46,13 +49,13 @@ PValues.rao.b0 <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
 
-for(i in 0:200){
+for(i in 0:428){
   
   PValues.rao.b0 <- c(PValues.rao.b0, RaosScoreBeta0(i))
 }
 
 hist(PValues.rao.b0, breaks = 40 )
-
+mean( PValues.rao.b0 < 0.05)
 
 
 ## density of p-values from Rao's Score Test
@@ -68,14 +71,14 @@ hist(PValues.rao.b0,
      breaks = 20,
      main = 'Histogram of PValues under Beta=0', 
      xlim = c(0,1),
-     col = "blue",
+     #col = "blue",
      xlab = paste("P-vlues,", length(PValues.rao.b0), " samples"),
      ylab = "Density")
 par(opr)
 
 mean( PValues.rao.b0 < 0.05)
 
-mean( PValues.rao.b0 < 0.025)
+mean( PValues.rao.b0 > 0.95)
 
 summary(PValues.rao.b0)
 
@@ -94,27 +97,64 @@ sum(PValues.rao.b0 < 0.05)
 sum(PValues.rao.b0 < 0.025)
 
 
-qqnorm(PValues.rao.b0,
-       main = "qqnorm plot")
-qqline(PValues.rao.b0, col="blue")
-
-install.packages('car')
+## install.packages('car')
 library(car)
 
+## plot the qq uniform fit
 qqPlot(PValues.rao.b0, distribution="unif",
        main = "qqPlot of uniform distribution")
 
-qqplot(PValues.rao.b0)
 
-PValues.rao <- NULL
-for(i in 0:998){
+
+
+######################################################################
+## check all Pai2g*Rho simulated
+######################################################################
+
+CheckPai2gRho <- function(circle){
   
-  PValues.rao <- c(PValues.rao, RaosScore(i))
+  ## 50k groups
+  ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
+  
+  ## 10k groups
+  routine <- paste("D:/PhD/PhD/100kbeta0/simulated_n2n1_", circle, ".txt", sep = "")
+  
+  TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
+  TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
+  
+  # summary(TTN_pai2g_sim)
+  
+  ## the Pai2gRho for LoF + missence variants
+  #ttn_pai2g_exp <- 1.977227008827069E-4
+  
+  ## the Pai2gRho for LoF variants pai2g_expected
+  ttn_pai2g_exp <- 3.6328594930727866E-5  
+  
+  len <- length(TTN_pai2g_sim)
+  
+  ttn_pai2g_exp <- TTN_pai2g_sim[len]
+
+  # print( c('Score: ', Score.sim, ' P-value: ', p.value, ' Pai2gRho: ', ttn_pai2g_exp) )
+  return( ttn_pai2g_exp ) 
+}
+########################
+
+pai2g.sim <- NULL
+
+for(i in 0:365){
+  
+  pai2g.sim <- c(pai2g.sim, CheckPai2gRho(i))
 }
 
-hist(PValues.rao,
-     xlim = c(0,1))
+plot(pai2g.sim)
+abline(h = 3.6328594930727866E-5, col='blue')
 
+
+hist(pai2g.sim ,
+     main = 'Hist of Sum(Pai2g*Rho) simulated') 
+
+
+################################################################################################
 mean(PValues.rao < 0.05)
 
 ## density of p-values from Rao's Score Test
@@ -193,11 +233,11 @@ VarianceBeta0 <- function(circle){
   ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
   
   ## 10k groups
-  routine <- paste("D:/PhD/PhD/10kbeta0/simulated_n2n1_", circle, ".txt", sep = "")
+  routine <- paste("D:/PhD/PhD/100kbeta0/simulated_n2n1_1.txt", sep = "")
   
   TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
   TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
-  
+  plot(TTN_pai2g_sim)
   # summary(TTN_pai2g_sim)
   
   ttn_pai2g_exp <- 1.977227008827069E-4
