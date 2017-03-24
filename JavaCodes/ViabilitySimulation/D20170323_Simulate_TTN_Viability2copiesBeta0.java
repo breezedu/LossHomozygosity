@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
@@ -141,7 +140,7 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 			if( check_If_hits_Exons(position, exonList) ){
 				
 				//System.out.println(" One hit: " + position);
-				//check the 10% threshold:
+				//check the 10% or 15% threshold:
 				double allel_freq = Double.parseDouble( variants[index_af]);
 				
 				if(allel_freq > 0 && allel_freq < 0.1){
@@ -196,10 +195,10 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		//get 10k simulations, output simulated n1, n2, and pai2_g into a txt document. 
 		
 		Random generator = new Random(1234);
-		int size = 100000; 
+		int size = 67000; 
 		
 		//since there are only 4 cores in my desktop, so I have to limit the use of cores to be 3, otherwise the cpu occupation would be 100%
-		for(int i=0; i<10; i+=3){
+		for(int i=0; i<1000; i+=3){
 			
 			//every time, only pass 3 parallel jobs to the IntStream() method;
 			//in this way, I can physically, control the usage of CPUs to be less than 100%. 
@@ -228,7 +227,8 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 
 	
 	/**************
-	 * Calculate the summion of Pai_2|g * Rho from the population data
+	 * Pass an arrayList of allele frequencies
+	 * Return the summation of Pai_2|g * Rho from the population data
 	 * 
 	 * @param alleleFreq_list
 	 * @return
@@ -287,7 +287,8 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		//write the title line
 		outWriter.write("n1" + "\t" + "n2" + "\t" + "Pai2g\n");
 		
-		//here size denotes sample size 100k here
+		/******************************************************************************************************/
+		//here size denotes sample size 100k here 
 		for(int i=0; i<size; i++){
 			
 			String n1andn2 = MonteCarol(alleleFreq_list, generator, alpha, beta, alleles_record);
@@ -298,7 +299,7 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 			
 		} //end for 10 million loop;
 		
-		outWriter.close(); 
+		// outWriter.close(); 
 		System.out.println("Viability #1= " + via1 + " via#2=" + via2 + " a=" + alpha + " b=" + beta); 
 		System.out.println("Simulation # " + circle + " done, there are " + alleleFreq_list.size() + " variants on the gene. \n");
 		
@@ -307,7 +308,6 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		//print out recorded alleles
 		// put each simulated allele frequency to the array list allels_sim; 
 		for(int i=0; i<alleles_record.length; i++){
-			System.out.print(alleles_record[i] + " ");
 			allels_sim.add( alleles_record[i]/(size*2) );
 		}
 		System.out.println();
@@ -315,6 +315,10 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		double Pai2gRho_sim = Calculate_SumPai2gRho(allels_sim); 
 		System.out.println("The simulated SumPai2gRho: " + Pai2gRho_sim);
 		
+		//write the simulated Pai2gRho to the txt document, the very last line; 
+		outWriter.write("0" + "\t" + "0" +"\t" + Pai2gRho_sim + "\n");
+		
+		outWriter.close(); 
 		
 	}//end simulate_10K_MonteCarols() method; 
 
@@ -333,10 +337,14 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 	private static String MonteCarol(ArrayList<Double> alleleFreq_list, Random generator, double alpha, double beta, double[] alleles_record) {
 		// TODO Auto-generated method stub
 		
+		// create new array from old array; 
+		// when the viability for current simulated phenotype is negative, we have to delete the allele counts we simulated. 
+		double[] alleles_temp = new double[alleles_record.length];
+				
 		//4.1 get the arrayList of qualified allele frequencies alleleFreq_list
 		//4.2 get an range of random integers for each allele frequency
 		int n1 = 0;
-		int n2 = 0;
+		int n2 = 0; 
 		int size = alleleFreq_list.size();
 		
 		//create two copies of the gene
@@ -359,7 +367,7 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 				n1++;
 				
 				//update the allele record in current site; 
-				alleles_record[i] ++;
+				alleles_temp[i] ++;
 				
 				copy1.add(1);
 			} else {
@@ -374,17 +382,13 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 			
 			//get allele frequence for current index i
 			double af = alleleFreq_list.get(i);
-			
-		//	System.out.println(alleleFreq_list.get(i) + "\t  " + range + "\t [" + (range/2-5) +"-" + (range/2+5)+"]"); 
-		//	double random1 = Math.random() ;
-		//	double random2 = Math.random() ;
-			
+
 			double random = generator.nextDouble();
 			
 			if(random < af) {
-				n2++;
+				n1++;
 				
-				alleles_record[i] ++;
+				alleles_temp[i] ++;
 				copy2.add(1);
 				
 			} else {
@@ -395,19 +399,24 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 				
 		//calculate Pai2g based on n1 and n2 values
 		double Pai2g = 0;
+				
 		
-		for(int i=0; i<size; i++){
-			if(copy1.get(i) > 0 && copy2.get(i) > 0)
-				Pai2g = 1; 
-		}
-		
-		if( n1 + n2 < 2 ) {
+		if( n1 < 2 ) {
 			
 			Pai2g = 0;
 			
 		} else {
 			
-			Pai2g = 1 - Math.pow(0.5, n1+n2-1);
+			Pai2g = 1 - Math.pow(0.5, n1-1);
+		}
+		
+		//check if there's homozyous variants
+		for(int i=0; i<size; i++){
+			if(copy1.get(i) > 0 && copy2.get(i) > 0){
+				
+				Pai2g = 1;
+				n2 ++;
+			} //end if
 		}
 		
 		//check viability 1/(1 + exp(alpha + beta*Ix))				
@@ -424,6 +433,13 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		
 		if(random < viability){
 			String ret = n1 + "\t" + n2 + "\t" + Pai2g;
+			
+			//assign the current alleles_temp back to alleles_record;
+			for(int j=0; j<alleles_temp.length;j++){
+				
+				alleles_record[j] += alleles_temp[j]; 
+			}
+			
 			return ret; 
 			
 		} else {
