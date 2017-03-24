@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
@@ -161,20 +162,11 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		
 		
 		/******************************************************************************************/
-		//3rd, calculate the probability of homozygous:
-		double homo = 1;
-		double hit_one_gene = 1;
+		//3rd, calculate the probability of homozygous: \sum{ \pai_2|g * \rho_g }
 		
-		for(int i=0; i<alleleFreq_list.size(); i++){
-			
-			hit_one_gene *= (1 - alleleFreq_list.get(i));
-		}
+		double Pai2gRho = Calculate_SumPai2gRho(alleleFreq_list); 
 		
-		hit_one_gene = 1 - hit_one_gene;
-		
-		homo = hit_one_gene * hit_one_gene;
-		
-		System.out.println("The observed Pai_2|g, probability of getting homozygos TTN gene: " + homo);
+		System.out.println("The observed Pai_2|g, probability of getting homozygos TTN gene: " + Pai2gRho);
 		
 		/*****************************************************************************
 		 * The output of this java code:
@@ -235,6 +227,32 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 	}//end main()
 
 	
+	/**************
+	 * Calculate the summion of Pai_2|g * Rho from the population data
+	 * 
+	 * @param alleleFreq_list
+	 * @return
+	 */
+	private static double Calculate_SumPai2gRho(ArrayList<Double> alleleFreq_list) {
+		// TODO Auto-generated method stub
+		
+		double pai2gRho = 1;
+		double hit_one_gene = 1;
+		
+		for(int i=0; i<alleleFreq_list.size(); i++){
+			
+			hit_one_gene *= (1 - alleleFreq_list.get(i));
+		}
+		
+		hit_one_gene = 1 - hit_one_gene;
+		
+		pai2gRho = hit_one_gene * hit_one_gene;
+		
+		return pai2gRho;
+		
+	} //end Calculate_SumPai2gRho() method; 
+
+
 	/***********
 	 * via1 = 1 / ( 1 + e^alpha)
 	 * via2 = 1 / ( 1 + e^(alpha + beta*I) )
@@ -250,6 +268,10 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 	 */
 	private static void simulate_100K_MonteCarols(ArrayList<Double> alleleFreq_list, Random generator, int size, int circle) throws IOException {
 		// TODO Auto-generated method stub
+		
+		//create an array to record mutations happened on each site of each copy
+		double[] alleles_record = new double[alleleFreq_list.size()];
+		
 		System.out.println(); 
 		double via1 = 0.881;
 		double via2 = 0.511; 
@@ -265,10 +287,10 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		//write the title line
 		outWriter.write("n1" + "\t" + "n2" + "\t" + "Pai2g\n");
 		
-		//here size denotes sample size
+		//here size denotes sample size 100k here
 		for(int i=0; i<size; i++){
 			
-			String n1andn2 = MonteCarol(alleleFreq_list, generator, alpha, beta);
+			String n1andn2 = MonteCarol(alleleFreq_list, generator, alpha, beta, alleles_record);
 			//System.out.println("n2+n1: " + n2andn1);
 			
 			//write n2 and n1 into a txt file; 
@@ -279,6 +301,21 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		outWriter.close(); 
 		System.out.println("Viability #1= " + via1 + " via#2=" + via2 + " a=" + alpha + " b=" + beta); 
 		System.out.println("Simulation # " + circle + " done, there are " + alleleFreq_list.size() + " variants on the gene. \n");
+		
+		ArrayList<Double> allels_sim = new ArrayList<Double>();
+		
+		//print out recorded alleles
+		// put each simulated allele frequency to the array list allels_sim; 
+		for(int i=0; i<alleles_record.length; i++){
+			System.out.print(alleles_record[i] + " ");
+			allels_sim.add( alleles_record[i]/(size*2) );
+		}
+		System.out.println();
+		
+		double Pai2gRho_sim = Calculate_SumPai2gRho(allels_sim); 
+		System.out.println("The simulated SumPai2gRho: " + Pai2gRho_sim);
+		
+		
 	}//end simulate_10K_MonteCarols() method; 
 
 
@@ -288,11 +325,12 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 	 * 
 	 * @param alleleFreq_list
 	 * @param generator 
+	 * @param alleles_record 
 	 * @param beta2 
 	 * @param alpha2 
 	 * @return
 	 */
-	private static String MonteCarol(ArrayList<Double> alleleFreq_list, Random generator, double alpha, double beta) {
+	private static String MonteCarol(ArrayList<Double> alleleFreq_list, Random generator, double alpha, double beta, double[] alleles_record) {
 		// TODO Auto-generated method stub
 		
 		//4.1 get the arrayList of qualified allele frequencies alleleFreq_list
@@ -319,6 +357,10 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 			
 			if(random < af){
 				n1++;
+				
+				//update the allele record in current site; 
+				alleles_record[i] ++;
+				
 				copy1.add(1);
 			} else {
 				
@@ -341,6 +383,8 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 			
 			if(random < af) {
 				n2++;
+				
+				alleles_record[i] ++;
 				copy2.add(1);
 				
 			} else {
@@ -385,7 +429,7 @@ public class D20170323_Simulate_TTN_Viability2copiesBeta0 {
 		} else {
 			
 		//	System.out.println(random + " > " + viability + ", n1=" +n1 + " n2=" + n2 + " Not viable.");
-			return MonteCarol(alleleFreq_list, generator, alpha, beta); 
+			return MonteCarol(alleleFreq_list, generator, alpha, beta, alleles_record); 
 			
 		}
 
