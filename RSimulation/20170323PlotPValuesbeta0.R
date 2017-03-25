@@ -38,8 +38,15 @@ RaosScoreBeta0 <- function(circle){
   ## Calculate p-values 
   p.value <- (1 - pchisq(Score.sim, df=1)) 
   
-  print( c('Score: ', Score.sim, ' P-value: ', p.value, ' Pai2gRho: ', ttn_pai2g_exp) )
-  return( p.value ) 
+  if( p.value < 0.00001){
+    print(routine)
+    print( c('Score: ', Score.sim, ' P-value: ', p.value, ' Pai2gRho: ', ttn_pai2g_exp) )
+  }
+  
+  #print( c('Score: ', Score.sim, ' P-value: ', p.value, ' Pai2gRho: ', ttn_pai2g_exp) )
+  #if( p.value > 0.00001 )
+    return( p.value ) 
+  
 }
 ########################
 
@@ -49,7 +56,7 @@ PValues.rao.b0 <- NULL
 
 ## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
 
-for(i in 0:629){
+for(i in 2001:2093){
   
   PValues.rao.b0 <- c(PValues.rao.b0, RaosScoreBeta0(i))
 }
@@ -64,6 +71,7 @@ density(PValues.rao.b0)
 ## plot P-values from Rao's Score Test
 plot(density(PValues.rao.b0), main = 'Plot 2000 Samples P-Values when beta=0')
 
+par(mfrow = c(1,1))
 opr <- par(lwd=3)
 
 hist(PValues.rao.b0, 
@@ -71,6 +79,7 @@ hist(PValues.rao.b0,
      breaks = 20,
      main = 'Histogram of PValues under Beta=0', 
      xlim = c(0,1),
+     ylim = c(0, 200),
      #col = "blue",
      xlab = paste("P-vlues,", length(PValues.rao.b0), " samples"),
      ylab = "Density")
@@ -85,7 +94,7 @@ summary(PValues.rao.b0)
 hist(PValues.rao.b0, 
      breaks=seq(0,1,l=20),
      freq=FALSE,
-     col="blue",
+     col="gray",
      main="Histogram of PValues under Beta=0",
      xlab="P-values",
      ylab="sum",
@@ -141,7 +150,7 @@ CheckPai2gRho <- function(circle){
 
 pai2g.sim <- NULL
 
-for(i in 0:479){
+for(i in 2001:2093){
   
   pai2g.sim <- c(pai2g.sim, CheckPai2gRho(i))
 }
@@ -150,32 +159,15 @@ plot(pai2g.sim)
 abline(h = 3.6328594930727866E-5, col='blue')
 
 
-hist(pai2g.sim ,
+hist(pai2g.sim , 
+     breaks = 40,
+     #xlim = c(1e-5, 2e-4),
      main = 'Hist of Sum(Pai2g*Rho) simulated') 
+abline( v = 3.6328E-5, col = 'blue')
 
 
 ################################################################################################
-mean(PValues.rao < 0.05)
 
-## density of p-values from Rao's Score Test
-density(PValues.rao) 
-
-## plot P-values from Rao's Score Test
-plot(density(PValues.rao), main = 'Plot 1000 groups P-Values, sample size 10k')
-
-
-for(i in 101:229){
-  
-  PValues.rao <- c(PValues.rao, RaosScore(i))
-}
-
-## density of p-values from Rao's Score Test
-density(PValues.rao) 
-
-## plot P-values from Rao's Score Test
-plot(density(PValues.rao), main = 'Plot 229 groups P-Values')
-
-summary(PValues.rao)
 
 
 
@@ -250,18 +242,16 @@ VarianceBeta0 <- function(circle){
 }
 ########################
 
-## calculate P-Values for 226 groups of simulated genotypes with 50K individuals in each group.
-## initial PValues.rao as a null vector
-var.rao.b0 <- NULL
+##########################################################
+## check p-values super small: 
 
-## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
+TTN_pai2g_sim <- read.table('D:/PhD/PhD/100kbeta0/simulated_n2n1_6.txt', header = T, sep = "\t")
+n1 <- TTN_pai2g_sim$n1
+n2 <- TTN_pai2g_sim$n2
+TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
 
-for(i in 0:1199){
-  
-  var.rao.b0 <- c(var.rao.b0, VarianceBeta0(i))
-}
-
-mean(var.rao.b0)
-
-length(var.rao.b0)
-
+# plot 3 plots together
+par(mfrow = c(3, 1))
+plot(n1)
+plot(n2)
+plot(TTN_pai2g_sim)
