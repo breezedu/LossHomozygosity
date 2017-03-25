@@ -54,9 +54,10 @@ RaosScoreBeta0 <- function(circle){
 ## initial PValues.rao as a null vector
 PValues.rao.b0 <- NULL
 
-## read in 226 * 50,000 Pai2|g, apply to Rao's Score Test formula, calculate the P-values
+start <- 2001
+end <- 2786
 
-for(i in 2001:2093){
+for(i in start:end){
   
   PValues.rao.b0 <- c(PValues.rao.b0, RaosScoreBeta0(i))
 }
@@ -67,19 +68,18 @@ mean( PValues.rao.b0 < 0.05)
 
 ## density of p-values from Rao's Score Test
 density(PValues.rao.b0) 
-
-## plot P-values from Rao's Score Test
 plot(density(PValues.rao.b0), main = 'Plot 2000 Samples P-Values when beta=0')
 
 par(mfrow = c(1,1))
 opr <- par(lwd=3)
 
+#######################################
 hist(PValues.rao.b0, 
      lwd=2,
      breaks = 20,
      main = 'Histogram of PValues under Beta=0', 
      xlim = c(0,1),
-     ylim = c(0, 200),
+     ylim = c(0, 20),
      #col = "blue",
      xlab = paste("P-vlues,", length(PValues.rao.b0), " samples"),
      ylab = "Density")
@@ -150,7 +150,7 @@ CheckPai2gRho <- function(circle){
 
 pai2g.sim <- NULL
 
-for(i in 2001:2093){
+for(i in start:end){
   
   pai2g.sim <- c(pai2g.sim, CheckPai2gRho(i))
 }
