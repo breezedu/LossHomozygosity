@@ -87,10 +87,10 @@ simulateGenocypes<-function(af.list){
 ## Print the Score and P-value
 ## 
 
-simu100kGenotypes <- function(){
+simu100kGenotypes <- function(TTN_af, sample.size){
   sim.list <- NULL
 
-  for(i in 1:100000)
+  for(i in 1:sample.size)
     sim.list <- c(sim.list, simulateGenocypes(TTN_af) )
 
   sim.matrix <- matrix( sim.list, nrow = 100000, ncol = 3, byrow = TRUE)
@@ -127,13 +127,20 @@ simu100kGenotypes <- function(){
 ## 
 
 PValues <- NULL
+sample.size <- 100000
+
+## Try parellel 
+library(foreach)
+library(doMC)
+registerDoMC(4)
 
 for( i in 1:200){
   
-  PValues <- c(PValues, simu100kGenotypes())
+  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size))
+  print(c('simulating: ', i))
 }
 
 hist(PValues)
-
+mean(PValues < 0.05)
 ###################################################
 
