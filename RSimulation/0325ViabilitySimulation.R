@@ -132,7 +132,7 @@ sample.size <- 100000
 ## Try parellel 
 library(foreach)
 library(doMC)
-registerDoMC(64)
+registerDoMC(16)
 
 foreach( i = 1:200) %dopar% {
   
@@ -140,9 +140,13 @@ foreach( i = 1:200) %dopar% {
   print(c('simulating: ', i))
 }
 
+png(file = "histPvalues.png")
+ hist(PValues)
+dev.off()
+
 mean(PValues < 0.05) 
 
-hist(PValues)
+## hist(PValues)
 
 ## mean(PValues < 0.05)
 ###################################################
