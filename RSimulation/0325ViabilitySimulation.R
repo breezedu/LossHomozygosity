@@ -111,17 +111,22 @@ simu100kGenotypes <- function(){
   I_beta <- TTN_pai2g_sim^2 - ttn_pai2g_exp^2
 
   Score.sim <- ( sum(Si.sim))^2 / (sum(I_beta) )
-
+  
   ## Calculate p-values 
   p.value <- (1 - pchisq(Score.sim, df=1)) 
+  
   print(c('Pvalue: ', p.value))
   return( p.value )
 }
 
 
+###################################################
+##
+## step four
+## Perform the simulation for 1000 times, see the PValues returned
+## 
 
 PValues <- NULL
-
 
 for( i in 1:200){
   
@@ -129,3 +134,6 @@ for( i in 1:200){
 }
 
 hist(PValues)
+
+###################################################
+
