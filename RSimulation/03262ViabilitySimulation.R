@@ -71,6 +71,9 @@ simulateGenocypes<-function(af.list){
     
     
   }
+  
+  
+  
   if(n1 > 1)
     print( c(n1, n2, Pai2g))
   
@@ -128,28 +131,28 @@ simu100kGenotypes <- function(TTN_af, sample.size){
 ## 
 
 PValues <- NULL
-sample.size <- 100000
+sample.size <- 1000
 
 ## Try parellel 
 library(foreach)
 library(doMC)
 registerDoMC(16)
 
-foreach( i = 1:20) %dopar% {
+list<-foreach( i = 1:20) %dopar% {
   
-  print(c('simulating: ', i))
-  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size))
-  
+ # print(c('simulating: ', i))
+  simu100kGenotypes(TTN_af, sample.size)
+ #  print( PValues )
 }
 
-#for( i in 1:10){
-#  print(i)
-#  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size))
-#}
+for( i in 1:10){
+  print(i)
+  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size))
+}
 
-png(file = "histPvalues.png")
-hist(PValues)
-dev.off()
+#png(file = "histPvalues.png")
+#hist(PValues)
+#dev.off()
 
 mean(PValues < 0.05) 
 
