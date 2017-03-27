@@ -25,7 +25,8 @@ TTN_af <- TTN_af$Allele.Frequency
 
 simulateGenocypes<-function(af.list, seed){
   
-  set.seed(seed)
+  set.seed(seed^2)
+
   len <- length(af.list)   # the length of allele frequencies vector
   af.sim1 <- runif(n=len, min=0, max=1)               #generate a vector of random double numbers [0,1]
   af.sim2 <- runif(n=len, min=0, max=1)
@@ -76,7 +77,7 @@ simulateGenocypes<-function(af.list, seed){
   if(n1 > 1)
     print( c(n1, n2, Pai2g))
   
-  return( c(n1, n2, Pai2g) )
+  return( Pai2g )
   
 }
 
@@ -91,15 +92,12 @@ simulateGenocypes<-function(af.list, seed){
 ## 
 
 simu100kGenotypes <- function(TTN_af, sample.size, seed){
-  sim.list <- NULL
+  pai2g.list <- NULL
 
   for(i in 1:sample.size)
-    sim.list <- c(sim.list, simulateGenocypes(TTN_af, seed) )
+    pai2g.list <- c(pai2g.list, simulateGenocypes(TTN_af, seed) )
   
-  sim.matrix <- matrix( sim.list, nrow = sample.size, ncol = 3, byrow = TRUE)
-  # head(sim.matrix)
-  ## the Pai2gRho for LoF variants pai2g_expected
-  TTN_pai2g.sim <- sim.matrix[,3]
+  TTN_pai2g.sim <- pai2g.list
   print(  summary( TTN_pai2g.sim ) )
 
   ttn_pai2g_exp <- 3.6328594930727866E-5  
@@ -130,7 +128,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, seed){
 ## 
 
 PValues <- NULL
-sample.size <- 10000
+sample.size <- 100000
 
 ## Try parellel 
 install.packages("foreach")

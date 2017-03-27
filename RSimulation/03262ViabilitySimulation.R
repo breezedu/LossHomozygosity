@@ -23,9 +23,8 @@ TTN_af <- TTN_af$Allele.Frequency
 ##        Pai2g (the sum of Pai2g * Rho) from Equation #8 in the proposal
 ## 
 
-simulateGenocypes<-function(af.list, seed){
+simulateGenocypes<-function(af.list){
   
-  set.seed(seed)
   len <- length(af.list)   # the length of allele frequencies vector
   af.sim1 <- runif(n=len, min=0, max=1)               #generate a vector of random double numbers [0,1]
   af.sim2 <- runif(n=len, min=0, max=1)
@@ -58,21 +57,20 @@ simulateGenocypes<-function(af.list, seed){
   
   if(n2 > 0){
     Pai2g <- 1
-  
+    
   } else {
+    
+    if( n1 < 2) {
+      Pai2g <- 0
       
-      if( n1 < 2) {
-        Pai2g <- 0
+    } else {
       
-      } else {
-        
-        Pai2g <- 1 - (0.5)^(n1 - 1)  
-        
-        }
+      Pai2g <- 1 - (0.5)^(n1 - 1)  
+      
+    }
+    
     
   }
-  
-  ##
   if(n1 > 1)
     print( c(n1, n2, Pai2g))
   
@@ -90,36 +88,36 @@ simulateGenocypes<-function(af.list, seed){
 ## Print the Score and P-value
 ## 
 
-simu100kGenotypes <- function(TTN_af, sample.size, seed){
+simu100kGenotypes <- function(TTN_af, sample.size){
   sim.list <- NULL
-
-  for(i in 1:sample.size)
-    sim.list <- c(sim.list, simulateGenocypes(TTN_af, seed) )
   
-  sim.matrix <- matrix( sim.list, nrow = sample.size, ncol = 3, byrow = TRUE)
+  for(i in 1:sample.size)
+    sim.list <- c(sim.list, simulateGenocypes(TTN_af) )
+  
+  sim.matrix <- matrix( sim.list, nrow = 100000, ncol = 3, byrow = TRUE)
   # head(sim.matrix)
   ## the Pai2gRho for LoF variants pai2g_expected
   TTN_pai2g.sim <- sim.matrix[,3]
-  print(  summary( TTN_pai2g.sim ) )
-
-  ttn_pai2g_exp <- 3.6328594930727866E-5  
-
-  len <- length(TTN_pai2g_sim)
-
-  Si.sim <- TTN_pai2g_sim - ttn_pai2g_exp 
+  print(summary( TTN_pai2g.sim ) )
   
+  ttn_pai2g_exp <- 3.6328594930727866E-5  
+  
+  ##  len <- length(TTN_pai2g_sim)
+  
+  Si.sim <- TTN_pai2g.sim - ttn_pai2g_exp
+
   n.sim <- length(Si.sim)
-
+  
   ## Score.sim = ( sum(Si.sim))^2 / ( n.sim * var(Si.sim) )
-  I_beta <- TTN_pai2g_sim^2 - ttn_pai2g_exp^2
-
+  I_beta <- TTN_pai2g.sim^2 - ttn_pai2g_exp^2
+  
   Score.sim <- ( sum(Si.sim))^2 / (sum(I_beta) )
   
   ## Calculate p-values 
-  p.value.sim <- (1 - pchisq(Score.sim, df=1)) 
+  p.value <- (1 - pchisq(Score.sim, df=1)) 
   
-  print(c('Pvalue: ', p.value.sim))
-  return( p.value.sim )
+  print(c('Pvalue: ', p.value))
+  return( p.value )
 }
 
 
@@ -130,30 +128,27 @@ simu100kGenotypes <- function(TTN_af, sample.size, seed){
 ## 
 
 PValues <- NULL
-sample.size <- 10000
+sample.size <- 100000
 
 ## Try parellel 
-install.packages("foreach")
-install.packages("doMC")
-
 library(foreach)
 library(doMC)
-registerDoMC(4)
+registerDoMC(16)
 
-foreach( i = 1:10) %dopar% {
+foreach( i = 1:20) %dopar% {
   
-  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size))
   print(c('simulating: ', i))
+  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size))
+  
 }
 
-for(i in 1:10) {
-  
-  seed <- 100 + i
-  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, seed))
-}
+#for( i in 1:10){
+#  print(i)
+#  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size))
+#}
 
 png(file = "histPvalues.png")
- hist(PValues)
+hist(PValues)
 dev.off()
 
 mean(PValues < 0.05) 
