@@ -194,7 +194,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
 ###########################################################################################
 
 PValues <- NULL
-sample.size <- 20000
+sample.size <- 100000
 
 
 
@@ -210,6 +210,10 @@ for(i in 1:20){
 print(PValues)
 
 mean(PValues < 0.05)
+pdf(file = "histPvalues0327_break40.pdf")
+hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
+hist(PValues, breaks = 20, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
+dev.off()
 ###########################################################################################
 
 
@@ -225,7 +229,7 @@ library(doMC)
 registerDoMC(16)
 
 
-list <- foreach( i = 1:100) %dopar% {
+list <- foreach( i = 1:1000) %dopar% {
   
   print(c('simulating: ', i))
   PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
@@ -239,8 +243,9 @@ print(PValues)
 mean(PValues < 0.05)
 
 
-pdf(file = "histPvalues0326.pdf")
+pdf(file = "histPvalues0327_break40.pdf")
  hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
+ hist(PValues, breaks = 20, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
 dev.off()
 
 mean(PValues < 0.05) 
