@@ -12,7 +12,7 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
-TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+#TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
 
@@ -84,9 +84,12 @@ simulateGenocypes<-function(af.list){
         }
       
   }
+  
   if(n1 > 1)
     print( c(n1, n2, Pai2g))
+  #print( length( c(aflist.sim, Pai2g)))
   
+  ## return a list of variants count on each know allele site, plus the calculated Pai2g for this 'person'
   return( c(aflist.sim, Pai2g) )
   
 }
@@ -97,11 +100,12 @@ simulateGenocypes<-function(af.list){
 ## step 2.5
 ## Calculate the Sum( Pai2g * Rho) for the simulated genotypes
 ## 
-CalPai2gRho <- function( matrinx ){
+CalPai2gRho <- function( matrix ){
   
   row <- dim( matrix)[1]
   col <- dim( matrix)[2] 
   
+  ## calculate the allele frequencies from the allele count matrix
   af.list <- rep(0, col)
   
   for( i in 1:col){
@@ -131,12 +135,17 @@ CalPai2gRho <- function( matrinx ){
 ## 
 
 simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
-  sim.list <- NULL
-
-  for(i in 1:sample.size)
-    sim.list <- c(sim.list, simulateGenocypes(TTN_af) )
-
-  sim.matrix <- matrix( sim.list, nrow = sample.size, ncol = variants.count+1, byrow = TRUE)
+  sim.list <- simulateGenocypes(TTN_af)
+  print(c('sim.length', length(sim.list)) )
+  
+  sim.matrix <- matrix( sim.list, nrow = 1, ncol = length(sim.list), byrow = T)
+  
+  for(i in 2:sample.size)
+    sim.matrix <- rbind(sim.matrix, simulateGenocypes(TTN_af))
+    
+#    sim.list <- c(sim.list, simulateGenocypes(TTN_af) )
+  
+#  sim.matrix <- matrix( sim.list, nrow = sample.size, ncol = variants.count+1, byrow = TRUE)
 
   ## the Pai2gRho for LoF variants pai2g_expected, the very last column from the matrix
   col.last <- ncol(sim.matrix)
@@ -173,15 +182,15 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
 ## 
 
 PValues <- NULL
-sample.size <- 10000
+sample.size <- 100000
 
 ## Try parellel 
 library(foreach)
 library(doMC)
-registerDoMC(32)
+registerDoMC(16)
 
 ## when doing parallel, have to use list<-foreach() to catch all the returned values from all loops!
-list <- foreach( i = 1:1000) %dopar% {
+list <- foreach( i = 1:100) %dopar% {
 
   print(c('simulating: ', i))
   PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
@@ -193,11 +202,11 @@ PValues <- c(PValues, unlist(list) )
 
 #############
 ## non parallel
-for(i in 1:200){
-  print(i)
-  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
+#for(i in 1:200){
+#  print(i)
+#  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
   
-}
+#}
 
 print(PValues)
 
