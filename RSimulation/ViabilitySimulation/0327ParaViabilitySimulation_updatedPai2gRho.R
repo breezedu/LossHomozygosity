@@ -12,7 +12,7 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
-#TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
 
@@ -90,7 +90,7 @@ simulateGenocypes<-function(af.list){
   #print( length( c(aflist.sim, Pai2g)))
   
   ## return a list of variants count on each know allele site, plus the calculated Pai2g for this 'person'
-  return( c(aflist.sim, Pai2g) )
+  return( c(Pai2g, aflist.sim) )
   
 }
 
@@ -100,23 +100,14 @@ simulateGenocypes<-function(af.list){
 ## step 2.5
 ## Calculate the Sum( Pai2g * Rho) for the simulated genotypes
 ## 
-CalPai2gRho <- function( matrix ){
+CalPai2gRho <- function( af.list ){
   
-  row <- dim( matrix)[1]
-  col <- dim( matrix)[2] 
-  
-  ## calculate the allele frequencies from the allele count matrix
-  af.list <- rep(0, col)
-  
-  for( i in 1:col){
-    
-    af.list[i] <- sum( matrix[ ,i] ) / (row * 2)
-  }
+  print( summary(af.list) )
   
   Pai2gRho <- 1
-  for(i in 1:col){
+  for(af in af.list){
     
-    Pai2gRho <- Pai2gRho * ( 1 - af.list[i])
+    Pai2gRho <- Pai2gRho * ( 1 - af)
   }
   
   Pai2gRho <- ( 1 - Pai2gRho )^2
@@ -135,27 +126,43 @@ CalPai2gRho <- function( matrix ){
 ## 
 
 simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
-  sim.list <- simulateGenocypes(TTN_af)
-  print(c('sim.length', length(sim.list)) )
   
-  sim.matrix <- matrix( sim.list, nrow = 1, ncol = length(sim.list), byrow = T)
+  ## initialize a vector of variants af starts at 0
+  variants.sim <- rep(0, variants.count)
   
-  for(i in 2:sample.size)
-    sim.matrix <- rbind(sim.matrix, simulateGenocypes(TTN_af))
+  ## initialize pai2g.sim
+  pai2g.sim <- NULL
+  
+#  sim.list <- simulateGenocypes(TTN_af)
+#  print(c('sim.length', length(sim.list)) )
+  
+#  sim.matrix <- matrix( sim.list, nrow = 1, ncol = length(sim.list), byrow = T)
+  
+  for(i in 1:sample.size){
+    
+    genotype <- simulateGenocypes(TTN_af)
+    
+    pai2g.sim <- c(pai2g.sim, genotype[1])
+    variants.sim <- variants.sim + genotype[-1]
+    
+  }
+#    sim.matrix <- rbind(sim.matrix, simulateGenocypes(TTN_af))
     
 #    sim.list <- c(sim.list, simulateGenocypes(TTN_af) )
   
 #  sim.matrix <- matrix( sim.list, nrow = sample.size, ncol = variants.count+1, byrow = TRUE)
 
   ## the Pai2gRho for LoF variants pai2g_expected, the very last column from the matrix
-  col.last <- ncol(sim.matrix)
-  TTN_pai2g.sim <- sim.matrix[ ,col.last]
-  sim.matrix <- sim.matrix[ ,-col.last]
+#  col.last <- ncol(sim.matrix)
+#  TTN_pai2g.sim <- sim.matrix[ ,col.last]
+#  sim.matrix <- sim.matrix[ ,-col.last]
   
+  variants.sim <- variants.sim / (sample.size * 2)
   ttn_pai2g_exp <- 3.6328594930727866E-5  
   
-  ttn_pai2g_exp <- CalPai2gRho( sim.matrix )
-  
+  ttn_pai2g_exp <- CalPai2gRho( variants.sim )
+ 
+  TTN_pai2g.sim <- pai2g.sim 
   Si.sim <- TTN_pai2g.sim - ttn_pai2g_exp
   
   n.sim <- length(Si.sim)
@@ -182,7 +189,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
 ## 
 
 PValues <- NULL
-sample.size <- 100000
+sample.size <- 20000
 
 ## Try parellel 
 library(foreach)
@@ -202,11 +209,11 @@ PValues <- c(PValues, unlist(list) )
 
 #############
 ## non parallel
-#for(i in 1:200){
-#  print(i)
-#  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
+for(i in 1:20){
+  print(i)
+  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
   
-#}
+}
 
 print(PValues)
 
