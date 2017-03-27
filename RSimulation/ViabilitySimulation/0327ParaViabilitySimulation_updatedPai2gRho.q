@@ -6,4 +6,4 @@
 
 export PATH=/opt/apps/R-2.15.2/bin:$PATH
 
-R CMD BATCH 0326ParaViabilitySimulation.R 
+R CMD BATCH 0327ParaViabilitySimulation_updatedPai2gRho.R 

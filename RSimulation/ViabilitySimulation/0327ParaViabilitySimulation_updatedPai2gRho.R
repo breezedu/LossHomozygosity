@@ -16,7 +16,7 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
-TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+## TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
 
@@ -194,26 +194,33 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
 ###########################################################################################
 
 PValues <- NULL
-sample.size <- 100000
+sample.size <- 10000
 
 
 
 ###########################################################################################
 ##
 ## non parallel
-for(i in 1:20){
-  print(c('simulateiong #', i) )
-  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
-  
-}
-
-print(PValues)
-
+#
+# print(PValues)
+#
+# pdf(file = "histPvalues0327_break40.pdf")
+#
+# for(i in 1:20){
+#  print(c('simulateiong #', i) )
+#  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
+#  
+#  if(i%%5 == 0){
+#    
+#    hist(PValues, breaks = 20, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+#  }
+#  
+#}
+#
+#hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+#
+#dev.off()
 mean(PValues < 0.05)
-pdf(file = "histPvalues0327_break40.pdf")
-hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
-hist(PValues, breaks = 20, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
-dev.off()
 ###########################################################################################
 
 
@@ -228,25 +235,49 @@ library(foreach)
 library(doMC)
 registerDoMC(16)
 
+set.seed(2017)
+pdf(file = "histPvalues0327_g.pdf")
 
-list <- foreach( i = 1:1000) %dopar% {
+##############
+## the first 500 samples
+list <- foreach( i = 1:500) %dopar% {
   
   print(c('simulating: ', i))
   PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
   
 }
 
+  PValues <- c(PValues, unlist(list) )
+
+
+  hist(PValues, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+  hist(PValues, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+
+  
+######################################
+## the second 500 samples
+##
+list <- foreach( i = 501:1000) %dopar% {
+    
+  print(c('simulating: ', i))
+  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
+    
+}
+  
 PValues <- c(PValues, unlist(list) )
-
+  
+  
+hist(PValues, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+hist(PValues, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+  
+  
+hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+hist(PValues, breaks = 20, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) ) 
+dev.off() 
 print(PValues)
+ 
+mean(PValues < 0.05) 
 
-mean(PValues < 0.05)
-
-
-pdf(file = "histPvalues0327_break40.pdf")
- hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
- hist(PValues, breaks = 20, main = 'Hist of P-values', xlab = paste(c('samples:', length(PValues))) )
-dev.off()
 
 mean(PValues < 0.05) 
 
