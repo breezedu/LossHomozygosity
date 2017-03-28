@@ -7,7 +7,7 @@ RaosScoreBeta0 <- function(circle){
   ## routine <- paste("D:/PhD/PhD/beta0/simulated_n2n1_", circle, ".txt", sep = "")
   
   ## 10k groups
-  routine <- paste("D:/PhD/PhD/100kbeta0/simulated_n2n1_", circle, ".txt", sep = "")
+  routine <- paste("D:/PhD/PhD/100kbeta0/100k_DoubleAF/simulated_n2n1_", circle, ".txt", sep = "")
   
   TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
   TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
@@ -54,8 +54,8 @@ RaosScoreBeta0 <- function(circle){
 ## initial PValues.rao as a null vector
 PValues.rao.b0 <- NULL
 
-start <- 2001
-end <- 2786
+start <- 0
+end <- 2000
 
 for(i in start:end){
   
@@ -79,7 +79,7 @@ hist(PValues.rao.b0,
      breaks = 20,
      main = 'Histogram of PValues under Beta=0', 
      xlim = c(0,1),
-     ylim = c(0, 20),
+     #ylim = c(0, 120),
      #col = "blue",
      xlab = paste("P-vlues,", length(PValues.rao.b0), " samples"),
      ylab = "Density")
@@ -245,7 +245,7 @@ VarianceBeta0 <- function(circle){
 ##########################################################
 ## check p-values super small: 
 
-TTN_pai2g_sim <- read.table('D:/PhD/PhD/100kbeta0/simulated_n2n1_6.txt', header = T, sep = "\t")
+TTN_pai2g_sim <- read.table('D:/PhD/PhD/100kbeta0/simulated_n2n1_2777.txt', header = T, sep = "\t")
 n1 <- TTN_pai2g_sim$n1
 n2 <- TTN_pai2g_sim$n2
 TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
@@ -255,3 +255,4 @@ par(mfrow = c(3, 1))
 plot(n1)
 plot(n2)
 plot(TTN_pai2g_sim)
+par(mfrow = c(1, 1))
