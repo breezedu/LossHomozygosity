@@ -240,7 +240,7 @@ set.seed(2017)
 
 ##############
 ## the first 1000 samples
-list <- foreach( i = 1:200) %dopar% {
+list <- foreach( i = 1:1200) %dopar% {
   
   print(c('simulating: ', i))
   PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
