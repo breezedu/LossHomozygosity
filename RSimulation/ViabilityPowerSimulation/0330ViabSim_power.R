@@ -17,7 +17,7 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
-TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+## TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
 
@@ -118,9 +118,10 @@ simulateGenotypes<-function(af.list){
     return( c(Pai2g, aflist.sim))
   
   } else {
-
-      ##  print(paste(random.via, '<', viability))
-        return( simulateGenotypes(af.list) )
+      
+      if(Pai2g > 0)
+        print(paste(random.via, '>', viability))
+      return( simulateGenotypes(af.list) )
     
   }
   
@@ -222,7 +223,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
 ###########################################################################################
 
 PValues <- NULL
-sample.size <- 200
+sample.size <- 100000
 
 
 
@@ -230,11 +231,11 @@ sample.size <- 200
 ##
 ## non parallel
 #
-print(PValues)
-
- pdf(file = "histPvalues0330_breaksample2ksize200k.pdf")
-
- for(i in 1:20){
+#print(PValues)
+#
+# pdf(file = "histPvalues0330_breaksample2ksize200k.pdf")
+#
+ for(i in 1:10){
   print(c('simulateiong #', i) )
   PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
   
@@ -245,10 +246,10 @@ print(PValues)
   
 }
 
-hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+ hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
 #
-dev.off()
-mean(PValues < 0.05)
+#dev.off()
+ mean(PValues < 0.05)
 ###########################################################################################
 
 
@@ -268,7 +269,7 @@ set.seed(2017)
 
 ##############
 ## the first 1000 samples
-list <- foreach( i = 1:2000) %dopar% {
+list <- foreach( i = 1:1000) %dopar% {
   
   print(c('simulating: ', i))
   PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
@@ -278,7 +279,7 @@ list <- foreach( i = 1:2000) %dopar% {
 PValues <- c(PValues, unlist(list) )
 
 ## plot Hist into a PDF document
-pdf(file = "histPvalues0329_sample2ksize100k.pdf")
+pdf(file = "histPvalues0330Power_sample1ksize200k.pdf")
 
 hist(PValues, breaks = 40, main = 'Hist of P-values, breaks 40', xlab = paste('samples:', length(PValues)) )
 hist(PValues, breaks = 20, main = 'Hist of P-values, breaks 20', xlab = paste('samples:', length(PValues)) ) 
