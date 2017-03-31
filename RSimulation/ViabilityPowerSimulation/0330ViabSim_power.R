@@ -17,7 +17,7 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
-## TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+ TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
 
@@ -208,7 +208,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
   ## Calculate p-values 
   p.value <- (1 - pchisq(Score.sim, df=1)) 
   
-  print(c('Pai2gRho', ttn_pai2g_exp, 'Pvalue:', p.value))
+  print(paste('Pai2gRho', ttn_pai2g_exp,'score: ', Score.sim, 'Pvalue:', p.value))
   return( p.value )
 }
 
@@ -223,7 +223,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count){
 ###########################################################################################
 
 PValues <- NULL
-sample.size <- 100000
+sample.size <- 10000
 
 
 
