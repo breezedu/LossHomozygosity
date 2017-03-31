@@ -104,13 +104,13 @@ simulateGenotypes<-function(af.list){
   beta <- 1.80
   
   ## check the Indicator
-  I <- 0
-  if(Pai2g > 0) {
-    I <- 1
-  }
+  # I <- 0
+  # if(Pai2g > 0) {
+  #  I <- 1
+  # }
   
   ## or, we could use I <- Pai2g directly
-  I<-Pai2g
+  I <- Pai2g
   
   viability <- 1 / ( 1 + exp(alpha + beta * I))
   
