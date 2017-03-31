@@ -109,6 +109,9 @@ simulateGenotypes<-function(af.list){
     I <- 1
   }
   
+  ## or, we could use I <- Pai2g directly
+  I<-Pai2g
+  
   viability <- 1 / ( 1 + exp(alpha + beta * I))
   
   random.via <- runif(1)
