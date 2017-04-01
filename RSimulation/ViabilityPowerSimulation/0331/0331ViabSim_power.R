@@ -132,7 +132,7 @@ simulateGenotypes<-function(af.list, alpha, beta){
   ## return( c(Pai2g, aflist.sim) )
   
 }
-
+  
 ## test the simulateGenotypes() function
 # for(i in 1:100000){
 #   simulateGenotypes(TTN_af)
@@ -228,13 +228,14 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count, alpha, beta){
 ## Perform the simulation for 1000 times, see the PValues returned
 ###########################################################################################
 
-PValues <- NULL
-sample.size <- 200000
+
 ###########################################################################################
 ##
 ## non parallel
 #
-#print(PValues)
+# PValues <- NULL
+# sample.size <- 200000
+# print(PValues)
 #
 # pdf(file = "histPvalues0330_breaksample2ksize200k.pdf")
 #
@@ -252,7 +253,7 @@ sample.size <- 200000
 #
 # hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
 #
-#dev.off()
+# dev.off()
 # mean(PValues < 0.05)
 ###########################################################################################
 
@@ -277,7 +278,7 @@ beta.vector <- (0:21) / 10
 beta.vector
 
 
-sample.size <- 20000
+sample.size <- 200000
 
 ######################
 for(beta in beta.vector){

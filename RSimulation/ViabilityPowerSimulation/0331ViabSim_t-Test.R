@@ -17,7 +17,7 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
-## TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
 
@@ -229,31 +229,31 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count, alpha, beta){
 ###########################################################################################
 
 PValues <- NULL
-sample.size <- 200000
+sample.size <- 2000
 ###########################################################################################
 ##
 ## non parallel
 #
-#print(PValues)
+print(PValues)
 #
-# pdf(file = "histPvalues0330_breaksample2ksize200k.pdf")
+ pdf(file = "histPvalues0330_breaksample2ksize200k.pdf")
+
+
+ for(i in 1:20){
+  print(c('simulateiong #', i) )
+  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count, -1.92, 1.1))
+  
+  if(i%%5 == 0){
+    
+    hist(PValues, breaks = 20, main = paste('circle', i, 'Hist of P-values'), xlab = paste('samples:', length(PValues)) )
+  }
+  
+}
 #
+ hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
 #
-# for(i in 1:20){
-#  print(c('simulateiong #', i) )
-#  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count))
-#  
-#  if(i%%5 == 0){
-#    
-#    hist(PValues, breaks = 20, main = paste('circle', i, 'Hist of P-values'), xlab = paste('samples:', length(PValues)) )
-#  }
-#  
-#}
-#
-# hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
-#
-#dev.off()
-# mean(PValues < 0.05)
+dev.off()
+ mean(PValues < 0.05)
 ###########################################################################################
 
 
@@ -327,4 +327,6 @@ for(beta in beta.vector){
 
 ########################################################################################################
 ########################################################################################################
+
+
 
