@@ -18,7 +18,7 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
- TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+## TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
 
@@ -258,7 +258,7 @@ for(beta in beta.vector){
   PValues <- c(PValues, unlist(list) )
   
   ## plot Hist into a PDF document
-  pdf(file = paste('histPvalues0330Power_sample1ksize200k_beta', beta, '.pdf', sep = '') )
+  pdf(file = paste('histPvalues413Power_sample1ksize200k_beta', beta, '.pdf', sep = '') )
   
   hist(	PValues, 
         breaks = 40, 	
