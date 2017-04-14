@@ -43,28 +43,74 @@ simulateGenotypes<-function(af.list, alpha, beta){
   ## initialize a vector of zeros to store the simulated allele frequencies
   aflist.sim <- rep(0, len)
   
-  n1 <- sum(af.sim1 < af.list)                     ## counts of variants happened on gene copy #1
-  n2 <- sum(af.sim2 < af.list)                     ## counts of variants happened on gene copy #2
+  v1 <- sum(af.sim1 < af.list)                     ## counts of variants happened on gene copy #1
+  v2 <- sum(af.sim2 < af.list)                     ## counts of variants happened on gene copy #2
   
-  
-  ### calculate Pai2g for current person/genotype
-  Pai2g <- 0
-  
-  if(n2 > 0 & n1 > 0){
-    Pai2g <- 1
-    print( c(n1, n2, Pai2g))
+  ## calculate indicator I:
+  I <- 0
+    
+  if(v2 > 0 & v1 > 0){
+    I <- 1
+    print( c(v1, v2, I))
   } 
 
-
   
+  #################################################
+  n1 <- 0                     ## counts of heterozygous variants
+  n2 <- 0                     ## counts of homozygous variants
+  
+  for(i in 1:len){
+    
+    ### get counts for the homozygous variants
+    if(af.list[i] > af.sim1[i] & af.list[i] > af.sim2[i]){
+      
+      n2 <- n2 + 1
+    } 
+    
+    ### get counts for the heterozygous
+    ## check copy1
+    if(af.list[i] > af.sim2[i]){
+      n1 <- n1 + 1
+      
+      aflist.sim[i] <- aflist.sim[i] + 1
+    } 
+    
+    ## check copy2
+    if( af.list[i] > af.sim1[i]){
+      n1 <- n1 + 1
+      
+      aflist.sim[i] <- aflist.sim[i] + 1
+    }
+    
+    
+  } # end for i in 1:len loop
+
+  ###############################################
+  ### calculate Pai2g for current person/genotype
+  Pai2g <- 0
+   
+  if(n2 > 0){
+    Pai2g <- 1
+    
+  } else {
+    
+    if( n1 < 2) {
+      Pai2g <- 0
+      
+    } else {
+      
+      Pai2g <- 1 - (0.5)^(n1 - 1)  
+      
+    }
+    
+  } ## end if-else (n2 >0) condition
+
+
   #################################################
   ## Simulate the viability under the pwer, beta!=0
   ## alpha <- -1.92
   ## beta <- 1.80
-  
-  ## check the Indicator
-  I <- Pai2g
-  
+    
   ## or, we could use I <- Pai2g directly
   ## I <- Pai2g
   
@@ -137,7 +183,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count, alpha, beta){
   ## initialize pai2g.sim
   pai2g.sim <- NULL
   
-  ## simulate sample.size (100000) genotypes, return the Pai2gs and a vectore of allele counts for each site
+  ## simulate sample.size (200000) genotypes, return the Pai2gs and a vectore of allele counts for each site
   for(i in 1:sample.size){
     
     genotype <- simulateGenotypes(TTN_af, alpha, beta)
@@ -161,11 +207,13 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count, alpha, beta){
   
   n.sim <- length(Si.sim)
   
-  ## Rao's Score Test
-  #Score.sim = ( sum(Si.sim))^2 / ( n.sim * var(Si.sim) )
-  I_beta <- TTN_pai2g.sim^2 - ttn_pai2g_exp^2
+  ## Statistical t-Test
+  Score.sim = ( sum(Si.sim))^2 / ( n.sim * var(Si.sim) )
   
-  Score.sim <- ( sum(Si.sim))^2 / (sum(I_beta) )
+  $$ Rao's Scote Test
+  #I_beta <- TTN_pai2g.sim^2 - ttn_pai2g_exp^2
+  
+  #Score.sim <- ( sum(Si.sim))^2 / (sum(I_beta) )
   
   ## Calculate p-values 
   p.value <- (1 - pchisq(Score.sim, df=1)) 
@@ -192,7 +240,7 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count, alpha, beta){
 # alpha <- -1.922
 # beta <- 1.8
 # PValues <- NULL
-# sample.size <- 20000
+# sample.size <- 2000
 # print(PValues)
 
 # pdf(file = "histPvalues0413_breaksample20size200k.pdf")
@@ -237,13 +285,13 @@ set.seed(2017)
 ## Create Alpha and Beta
 alpha <- -1.922
 
-beta.vector <- c(1.8, 2.0, 2.2, 2.4)
+beta.vector <- c(1.8, 2.2)
 
 ## beta.vector = 0.5, 1.0, 1.5....4.5, 5.0
 
 
 
-sample.size <- 200000
+sample.size <- 20000
 
 ######################
 for(beta in beta.vector){
@@ -253,7 +301,7 @@ for(beta in beta.vector){
   
   ##############
   ## the first 1000 samples
-  list <- foreach( i = 1:1200) %dopar% {
+  list <- foreach( i = 1:200) %dopar% {
     
     print(c('simulating: ', i))
     PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count, alpha, beta) )
@@ -263,7 +311,7 @@ for(beta in beta.vector){
   PValues <- c(PValues, unlist(list) )
   
   ## plot Hist into a PDF document
-  pdf(file = paste('histPvalues413Power_sample1ksize200k_beta', beta, '.pdf', sep = '') )
+  pdf(file = paste('histPvalues414Power_sample1ksize200k_beta', beta, '.pdf', sep = '') )
   
   ## replace NAs with 0. in the simulated data frame, only when var(Si) = 0, we will get P-value = NA; 
   PValues[is.na(PValues)] <- 0
@@ -297,7 +345,7 @@ for(beta in beta.vector){
   
   
   
-}
+} ## enf for (beta in beta.vector)
 
 ########################################################################################################
 ########################################################################################################
