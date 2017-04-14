@@ -192,27 +192,32 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count, alpha, beta){
 # alpha <- -1.922
 # beta <- 1.8
 # PValues <- NULL
-# sample.size <- 200000
+# sample.size <- 20000
 # print(PValues)
-#
+
 # pdf(file = "histPvalues0413_breaksample20size200k.pdf")
-#
-#
+
+
 # for(i in 1:20){
 #  print(c('simulateiong #', i) )
 #  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count, alpha, beta))
-#
-# if(i%%5 == 0){
-#    
-#    hist(PValues, breaks = 20, main = paste('circle', i, 'Hist of P-values'), xlab = paste('samples:', length(PValues)) )
-#  }
-#  
-# } #end for i in 1:20
-#
-# hist(PValues, breaks = 40, main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
 
-# dev.off()
+# if(i%%10 == 0){
+    
+#    hist(PValues, 
+#         breaks = 20, 
+#         main = paste('circle', i, 'Hist of P-values'), 
+#         xlab = paste('samples:', length(PValues)) )
+#  }
+  
+# } #end for i in 1:20
+
+# hist(PValues, breaks = 40, xlim = c(0,1), main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
+
+#  dev.off()
+# PValues[is.na(PValues)] <- 0
 # mean(PValues < 0.05)
+
 ###########################################################################################
 
 
@@ -248,7 +253,7 @@ for(beta in beta.vector){
   
   ##############
   ## the first 1000 samples
-  list <- foreach( i = 1:1000) %dopar% {
+  list <- foreach( i = 1:200) %dopar% {
     
     print(c('simulating: ', i))
     PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count, alpha, beta) )
@@ -260,13 +265,18 @@ for(beta in beta.vector){
   ## plot Hist into a PDF document
   pdf(file = paste('histPvalues413Power_sample1ksize200k_beta', beta, '.pdf', sep = '') )
   
+  ## replace NAs with 0. in the simulated data frame, only when var(Si) = 0, we will get P-value = NA; 
+  PValues[is.na(PValues)] <- 0
+  
   hist(	PValues, 
+        xlim = c(0,1),
         breaks = 40, 	
         main = paste('Hist of P-values, breaks 40','alpha=', alpha,'beta=', beta), 
         xlab = paste('samples:', length(PValues), 'Pvalues<0.05', mean(PValues<0.05) )	
   )
   
   hist(	PValues, 
+        xlim = c(0,1),
         breaks = 20, 	
         main = paste('Hist of P-values, breaks 20','alpha=', alpha,'beta=', beta), 
         xlab = paste('samples:', length(PValues), 'Pvalues<0.05', mean(PValues<0.05) )	
