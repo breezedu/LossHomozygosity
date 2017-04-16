@@ -32,8 +32,8 @@ n2 <- c(rep(0,n))                              # n2 ...
 pi2.g <- c(rep(0,n))                           # pi2.g ...
 
 
-p1 <- runif(nsites, min=2/(2*np1), max=p.upper)   # generate random deviates from 0.001 to 0.5
-p2 <- runif(nsites, min=2/(2*np2), max=p.upper)   # generate random deviates from 0.001 to 0.5
+p1 <- runif(nsites, min=2/(2*np1), max=p.upper)   # generate random deviates from 0.001 to 0.05
+p2 <- runif(nsites, min=2/(2*np2), max=p.upper)   # generate random deviates from 0.001 to 0.05
 p <- c(p1*np1/n, p2*np2/n)                        # merge p1*2 and p2*2
 
 
