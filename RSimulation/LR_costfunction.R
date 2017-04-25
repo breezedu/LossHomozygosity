@@ -41,3 +41,14 @@ cost(-569.6, 530.9, x, y)
 cost( -1780, -530.9, x, y)
 
 cost( -1780.0, 530.9, x, y)
+
+library(lme4) 
+
+
+
+data.1 <- cbind(x, y)
+colnames(data.1) <- c("xlab", "ylab")
+
+
+data.1 <- data.frame(data.1)
+lm(ylab ~ xlab, data = data.1)
