@@ -9,6 +9,8 @@ RaosScoreBeta0 <- function(circle){
   ## 10k groups
   routine <- paste("D:/PhD/PhD/100kbeta0/100k_DoubleAF/simulated_n2n1_", circle, ".txt", sep = "")
   
+  routine <- paste("D:/PhD/PhD/200kbeta0/simulated_n2n1_", circle, ".txt", sep = "")
+  
   TTN_pai2g_sim <- read.table(routine, header = T, sep = "\t")
   TTN_pai2g_sim <- TTN_pai2g_sim $ Pai2g
   
@@ -54,8 +56,8 @@ RaosScoreBeta0 <- function(circle){
 ## initial PValues.rao as a null vector
 PValues.rao.b0 <- NULL
 
-start <- 0
-end <- 2000
+start <- 3000
+end <- 3200
 
 for(i in start:end){
   
