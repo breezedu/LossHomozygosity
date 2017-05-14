@@ -231,43 +231,9 @@ simu100kGenotypes <- function(TTN_af, sample.size, variants.count, alpha, beta){
 ###########################################################################################
 
 
+
 ###########################################################################################
 ##
-## non parallel
-#
- alpha <- -2.02
- beta <- 3.9
- PValues <- NULL
- sample.size <- 200000
- print(PValues)
-
- pdf(file = "histPvalues04152_breaksample20size200k.pdf")
-
-
- for(i in 1:256){
-  print(c('simulation #', i) )
-  PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count, alpha, beta))
-
- if(i%%5 == 0){
-    
-    hist(PValues, 
-         breaks = 20, 
-         main = paste('circle', i, 'Hist of P-values'), 
-         xlab = paste('samples:', length(PValues)) )
-  }
-  
- } #end for i in 1:20
-
- hist(PValues, breaks = 40, xlim = c(0,1), main = 'Hist of P-values', xlab = paste('samples:', length(PValues)) )
-
-  dev.off()
- # PValues[is.na(PValues)] <- 0
- 
-  mean(PValues < 0.05)
-
-###########################################################################################
-
-
 
 
 ###########################################################################################
@@ -284,13 +250,13 @@ set.seed(2017)
 ## Create Alpha and Beta
 alpha <- -2.22
 
-beta.vector <- c(3.8, 4.2)
+beta.vector <- c(1.0, 0.8, 0.6, 0.4, 0.2)
 
 ## beta.vector = 0.5, 1.0, 1.5....4.5, 5.0
 
 
 
-sample.size <- 300000
+sample.size <- 500000
 
 ######################
 for(beta in beta.vector){
@@ -300,7 +266,7 @@ for(beta in beta.vector){
   
   ##############
   ## the first 1000 samples
-  list <- foreach( i = 1:200) %dopar% {
+  list <- foreach( i = 1:256) %dopar% {
     
     print(c('simulating: ', i))
     PValues <- c(PValues, simu100kGenotypes(TTN_af, sample.size, variants.count, alpha, beta) )
@@ -340,19 +306,11 @@ for(beta in beta.vector){
   ## Print a 'table' of Pvalues we just simulated
   print(PValues)
   
-  mean(PValues < 0.05) 
+  print( mean(PValues < 0.05) )
   
   
   
 } ## enf for (beta in beta.vector)
 
-a <- -2.22
-b <- 10:20
-b <- b/10 * 2
-b
-
-via <- 1/ ( 1 + exp(a + b))
-
-via
 ########################################################################################################
 ########################################################################################################
