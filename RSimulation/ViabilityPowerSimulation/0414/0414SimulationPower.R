@@ -18,9 +18,12 @@
 TTN_af <- read.table("/work/AndrewGroup/ViabilitySimulation/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 ## loptop file
-#TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
+TTN_af <- read.table("D:/PhD/QualifyTTN_variants_OnExons.txt", header = T, sep = ",")
 
 TTN_af <- TTN_af$Allele.Frequency
+
+TTN_af <- TTN_af[0:203]
+TTN_af
 
 variants.count <- length( TTN_af )
 
